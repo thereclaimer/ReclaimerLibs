@@ -1,0 +1,12 @@
+[submodule "modules/r-common"]
+	path = modules/r-common
+	url = https://github.com/thereclaimer/RCommon
+[submodule "modules/r-win32"]
+	path = modules/r-win32
+	url = https://github.com/thereclaimer/RWin32
+[submodule "modules/r-memory"]
+	path = modules/r-memory
+	url = https://github.com/thereclaimer/RMemory
+[submodule "modules/r-math"]
+	path = modules/r-math
+	url = https://github.com/thereclaimer/RMath
