@@ -56,39 +56,6 @@ struct RSimdXMMRegisters_32_f32 {
     r_simd_4_f32 xmm_7;
 };
 
-namespace r_simd {
-
-    inline r_void 
-    xmm_pack_32_u32(
-        r_u32*                    in_f32_ptr,
-        RSimdXMMRegisters_32_u32* out_registers) {
-
-        out_registers->xmm_0 = r_simd_4_u32_load_aligned(in_u32_ptr +  0);
-        out_registers->xmm_1 = r_simd_4_u32_load_aligned(in_u32_ptr +  4);
-        out_registers->xmm_2 = r_simd_4_u32_load_aligned(in_u32_ptr +  8);
-        out_registers->xmm_3 = r_simd_4_u32_load_aligned(in_u32_ptr + 12);
-        out_registers->xmm_4 = r_simd_4_u32_load_aligned(in_u32_ptr + 16);
-        out_registers->xmm_5 = r_simd_4_u32_load_aligned(in_u32_ptr + 20);
-        out_registers->xmm_6 = r_simd_4_u32_load_aligned(in_u32_ptr + 24);
-        out_registers->xmm_7 = r_simd_4_u32_load_aligned(in_u32_ptr + 28);
-    }
-
-    inline r_void 
-    xmm_pack_32_f32(
-        r_f32*                    in_f32_ptr,
-        RSimdXMMRegisters_32_f32* out_registers) {
-
-        out_registers->xmm_0 = r_simd_4_u32_load_aligned(in_f32_ptr +  0);
-        out_registers->xmm_1 = r_simd_4_u32_load_aligned(in_f32_ptr +  4);
-        out_registers->xmm_2 = r_simd_4_u32_load_aligned(in_f32_ptr +  8);
-        out_registers->xmm_3 = r_simd_4_u32_load_aligned(in_f32_ptr + 12);
-        out_registers->xmm_4 = r_simd_4_u32_load_aligned(in_f32_ptr + 16);
-        out_registers->xmm_5 = r_simd_4_u32_load_aligned(in_f32_ptr + 20);
-        out_registers->xmm_6 = r_simd_4_u32_load_aligned(in_f32_ptr + 24);
-        out_registers->xmm_7 = r_simd_4_u32_load_aligned(in_f32_ptr + 28);
-    }
-
-};
 
 
 #endif //R_COMMON_SIMD_HPP
