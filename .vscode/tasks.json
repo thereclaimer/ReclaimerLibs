@@ -15,8 +15,8 @@
 			}
 		},
 		{
-			"label": "Build RWin32 Test",
-			"command": "r-win32-test-build-x64.bat",
+			"label": "Build RLibs",
+			"command": "r-libs-build-x64.bat",
 			"options": {
 				"cwd": "${workspaceFolder}/scripts"
 			},
