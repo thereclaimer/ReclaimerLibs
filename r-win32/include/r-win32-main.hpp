@@ -12,7 +12,7 @@ struct RWin32MainArgs {
 
 r_s32 r_win32_main(RWin32MainArgs& r_win32_args);
 
-#ifdef  R_WIN32_MAIN_REDIRECT
+#ifdef R_WIN32_MAIN_REDIRECT
 
 int WINAPI 
 wWinMain(
