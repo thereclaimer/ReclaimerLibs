@@ -2,6 +2,7 @@
 #define R_WIN32_RENDERING_HPP
 
 #include <r-common.hpp>
+#include "r-win32-window.hpp"
 
 enum RWin32RenderingContextType_ {
      RWin32RenderingContextType_None     = 0,
@@ -18,38 +19,30 @@ struct RWin32RenderingViewport {
     r_u32 height;
 };
 
-struct RWin32RenderingContextOpenGL {
-    HDC   device_context;
-    HGLRC gl_rendering_context;
-};
-
-struct RWin32RenderingContextDX3D {
-    //TODO
-
-};
-
-struct RWin32RenderingContext {
-    RWin32RenderingContextType type;
-    RWin32RenderingViewport    viewport;
-    RColor32BitNormalized      clear_color;
-    union {
-        RWin32RenderingContextOpenGL opengl;
-        RWin32RenderingContextDX3D   dx3d;
-    };
-};
+typedef r_handle RWin32RenderingContextHandle;
 
 namespace r_win32 {
 
-    r_external const r_b8   rendering_create_opengl_context(r_void);
-    r_external const r_void rendering_set_clear_color(RColor32Bit color_32);
-    r_external const r_void rendering_clear(r_void);
+    r_external const RWin32RenderingContextHandle 
+    rendering_create_opengl_context(
+        const RHNDWin32Window window_handle);
+    
+    r_external const r_b8 
+    rendering_set_clear_color(
+        const RWin32RenderingContextHandle rendering_context_handle, 
+        const RColor32Bit&                 color_32_ref);
+    
+    r_external const r_b8 
+    rendering_clear(
+        const RWin32RenderingContextHandle rendering_context_handle);
 
-    r_external const r_void 
+    r_external const r_b8 
     rendering_update_viewport_dimensions(
-        r_u32 position_x,
-        r_u32 position_y,
-        r_u32 width,
-        r_u32 height);
+        const RWin32RenderingContextHandle rendering_context_handle,
+        const r_u32                        position_x,
+        const r_u32                        position_y,
+        const r_u32                        width,
+        const r_u32                        height);
 };
 
 #endif //R_WIN32_RENDERING_HPP

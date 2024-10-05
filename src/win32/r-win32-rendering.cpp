@@ -6,15 +6,29 @@
 #include <GL/gl.h>
 #include <GL/wgl.h>
 #include <GL/glu.h>
+#include "r-win32-internal-window.hpp"
+#include "r-win32-internal-rendering.hpp"
 
-r_external const r_b8 
+r_external const RWin32RenderingContextHandle 
 r_win32::rendering_create_opengl_context(
-    r_void) {
+    const RHNDWin32Window window_handle) {
+
+
+    if(!window_handle) {
+        return(false);
+    }
+    RWin32Window* window_ptr = (RWin32Window*)window_handle; 
 
     //make sure we have an active context
-    const HDC device_context = r_win32_internal::window_get_device_context_handle();
+    const HDC device_context = window_ptr->win32_handle_device_context; 
     if (!device_context) {
         return(false);
+    }
+
+    //allocate a rendering context
+    RWin32RenderingContext* rendering_context_ptr = r_win32_internal::context_rendering_context_commit();
+    if (!rendering_context_ptr) {
+        return(NULL);
     }
 
     //set our preferred format descriptor
@@ -58,69 +72,79 @@ r_win32::rendering_create_opengl_context(
         return(false);
     }
 
-    //initialize the rendering context
-    RWin32RenderingContext& rendering_context = r_win32_internal::window_get_rendering_context();
-    rendering_context.opengl.device_context       = device_context;
-    rendering_context.opengl.gl_rendering_context = opengl_context; 
-    rendering_context.type                        = RWin32RenderingContextType_OpenGL;
-    rendering_context.viewport.position_x = 0;
-    rendering_context.viewport.position_y = 0;
-    rendering_context.viewport.width      = r_win32_internal::window_get_width();
-    rendering_context.viewport.height     = r_win32_internal::window_get_height();
+    rendering_context_ptr->opengl.device_context       = device_context;
+    rendering_context_ptr->opengl.gl_rendering_context = opengl_context; 
+    rendering_context_ptr->type                        = RWin32RenderingContextType_OpenGL;
+    rendering_context_ptr->viewport.position_x         = 0;
+    rendering_context_ptr->viewport.position_y         = 0;
+    rendering_context_ptr->viewport.width              = window_ptr->width;
+    rendering_context_ptr->viewport.height             = window_ptr->height;
 
     //set the viewport
     glViewport(
-        rendering_context.viewport.position_x,
-        rendering_context.viewport.position_y,
-        rendering_context.viewport.width,
-        rendering_context.viewport.height);
+        rendering_context_ptr->viewport.position_x,
+        rendering_context_ptr->viewport.position_y,
+        rendering_context_ptr->viewport.width,
+        rendering_context_ptr->viewport.height);
+
+    //set the rendering context in the window
+    window_ptr->rendering_context_ptr = rendering_context_ptr;
 
     //we're done
-    return(true);
+    return(rendering_context_ptr);
 }
 
-r_external const r_void 
+r_external const r_b8 
 r_win32::rendering_set_clear_color(
-    RColor32Bit color_32) {
+    const RWin32RenderingContextHandle rendering_context_handle, 
+    const RColor32Bit&                 color_32_ref) {
 
     //get the rendering context
-    RWin32RenderingContext& rendering_context = r_win32_internal::window_get_rendering_context();
-    
+    if (!rendering_context_handle) {
+        return(false);
+    }
+
+    RWin32RenderingContext* rendering_context_ptr = (RWin32RenderingContext*)rendering_context_handle;
+
     //normalize the color
     r_common::color_32_bit_normalize(
-        color_32,
-        rendering_context.clear_color);
+        color_32_ref,
+        rendering_context_ptr->clear_color);
   
-    switch (rendering_context.type) {
+    switch (rendering_context_ptr->type) {
 
         case RWin32RenderingContextType_OpenGL: {
             
             //set the gl clear color
             glClearColor(
-                rendering_context.clear_color.r,
-                rendering_context.clear_color.g,
-                rendering_context.clear_color.b,
-                rendering_context.clear_color.a);
+                rendering_context_ptr->clear_color.r,
+                rendering_context_ptr->clear_color.g,
+                rendering_context_ptr->clear_color.b,
+                rendering_context_ptr->clear_color.a);
 
         } break;
 
         default: {
             //nothing to do
-            return;
+            return(true);
         } break;
     }
 
-
+    return(true);
 }
 
-r_external const r_void 
+r_external const r_b8 
 r_win32::rendering_clear(
-    r_void) {
+    const RWin32RenderingContextHandle rendering_context_handle) {
 
     //get the rendering context
-    RWin32RenderingContext& rendering_context = r_win32_internal::window_get_rendering_context();
+    if (!rendering_context_handle) {
+        return(false);
+    }
+
+    RWin32RenderingContext* rendering_context_ptr = (RWin32RenderingContext*)rendering_context_handle;
     
-    switch (rendering_context.type) {
+    switch (rendering_context_ptr->type) {
 
         case RWin32RenderingContextType_OpenGL: {
             
@@ -129,41 +153,50 @@ r_win32::rendering_clear(
 
         default: {
             //nothing to do
-            return;
+            return(true);
         } break;
     }
+
+    return(true);
 }
 
-r_external const r_void 
+r_external const r_b8 
 r_win32::rendering_update_viewport_dimensions(
-    r_u32 position_x,
-    r_u32 position_y,
-    r_u32 width,
-    r_u32 height) {
+    const RWin32RenderingContextHandle rendering_context_handle,
+    const r_u32                        position_x,
+    const r_u32                        position_y,
+    const r_u32                        width,
+    const r_u32                        height) {
 
     //get the rendering context
-    RWin32RenderingContext& rendering_context = r_win32_internal::window_get_rendering_context();
+    if (!rendering_context_handle) {
+        return(false);
+    }
+
+    RWin32RenderingContext* rendering_context_ptr = (RWin32RenderingContext*)rendering_context_handle;
     
     //update the dimensions
-    rendering_context.viewport.position_x = position_x;
-    rendering_context.viewport.position_y = position_y;
-    rendering_context.viewport.width      = width;
-    rendering_context.viewport.height     = height;
+    rendering_context_ptr->viewport.position_x = position_x;
+    rendering_context_ptr->viewport.position_y = position_y;
+    rendering_context_ptr->viewport.width      = width;
+    rendering_context_ptr->viewport.height     = height;
 
-    switch (rendering_context.type) {
+    switch (rendering_context_ptr->type) {
         
         case RWin32RenderingContextType_OpenGL: {
                     
             glViewport(
-                rendering_context.viewport.position_x,
-                rendering_context.viewport.position_y,
-                rendering_context.viewport.width,
-                rendering_context.viewport.height);
+                rendering_context_ptr->viewport.position_x,
+                rendering_context_ptr->viewport.position_y,
+                rendering_context_ptr->viewport.width,
+                rendering_context_ptr->viewport.height);
         } break;
 
         default: {
             //nothing to do
-            return;
+            return(true);
         } break;
     }
+
+    return(true);
 }

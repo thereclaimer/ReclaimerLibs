@@ -62,8 +62,8 @@ namespace r_common {
 
     inline r_void
     color_32_bit_normalize(
-        RColor32Bit&           in_color_32,
-        RColor32BitNormalized& out_color_32_normalized) {
+        const RColor32Bit&           in_color_32,
+              RColor32BitNormalized& out_color_32_normalized) {
 
         switch (in_color_32.format) {
         

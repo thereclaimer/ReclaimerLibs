@@ -1,6 +1,8 @@
 #ifndef R_WIN32_INTERNAL_WINDOW_HPP
 #define R_WIN32_INTERNAL_WINDOW_HPP
 
+#include <r-memory.hpp>
+
 #include "r-win32.hpp"
 #include "r-win32-internal-rendering.hpp"
 
@@ -10,18 +12,19 @@ typedef LRESULT
     LPARAM l_param);
 
 struct RWin32Window {
-    HWND                   win32_handle_window;
-    HDC                    win32_handle_device_context;
-    MSG                    message;
-    r_u32                  position_x;
-    r_u32                  position_y;
-    r_u32                  width;
-    r_u32                  height;
-    r_b32                  quit_received;
-    RColorFormat           color_format;
-    r_u64                  frame_system_ticks_start;
-    r_u64                  frame_system_ticks_render;
-    RWin32RenderingContext rendering_context;
+    RHNDMemoryArena         arena;
+    HWND                    win32_handle_window;
+    HDC                     win32_handle_device_context;
+    MSG                     message;
+    r_u32                   position_x;
+    r_u32                   position_y;
+    r_u32                   width;
+    r_u32                   height;
+    r_b32                   quit_received;
+    RColorFormat            color_format;
+    r_u64                   frame_system_ticks_start;
+    r_u64                   frame_system_ticks_render;
+    RWin32RenderingContext* rendering_context_ptr;
 };
 
 namespace r_win32_internal {
