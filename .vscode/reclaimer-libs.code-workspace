@@ -4,22 +4,22 @@
 			"path": "..",
 			"name": "ReclaimerLibs"
 		},
-		{
-			"path": "../r-common",
-			"name": "RCommon"
-		},
-		{
-			"path": "../r-math",
-			"name": "RMath"
-		},
-		{
-			"path": "../r-memory",
-			"name": "RMemory"
-		},
-		{
-			"path": "../r-win32",
-			"name": "RWin32"
-		}
+		// {
+		// 	"path": "../r-common",
+		// 	"name": "RCommon"
+		// },
+		// {
+		// 	"path": "../r-math",
+		// 	"name": "RMath"
+		// },
+		// {
+		// 	"path": "../r-memory",
+		// 	"name": "RMemory"
+		// },
+		// {
+		// 	"path": "../r-win32",
+		// 	"name": "RWin32"
+		// }
 	],
 	"settings": {}
 }

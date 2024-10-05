@@ -1,0 +1,4 @@
+#ifndef R_ALGORITHMS_HPP
+#define R_ALGORITHMS_HPP
+
+#endif //R_ALGORITHMS_HPP
