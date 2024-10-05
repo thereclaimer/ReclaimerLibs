@@ -78,16 +78,16 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
 :: ARGUMENTS
 ::----------------------------------------------------------------
 
-@set cl_flags=        /c  ^
-                      /Zi ^
+@set cl_flags=        /Zi ^
                       /LD ^
-                      /MD
+                      /MD ^
+                      /O1
 
 @set cl_output=       /Fe:%path_build_bin%\RLibs.dll ^
                       /Fd:%path_build_bin%\RLibs.pdb ^
                       /Fo:%path_build_obj%\RLibs.obj
 
-@set cl_includes=     /I %path_include%              ^
+@set cl_includes=     /I %path_build_include%        ^
                       /I %path_src_r_algorithms%     ^
                       /I %path_src_r_common%         ^
                       /I %path_src_r_datastructures% ^
@@ -98,8 +98,9 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
 
 @set cl_source=       %path_source_file%
 
-@set cl_link=         /link                     ^
-                      /LIBPATH:%path_vcpkg_lib%
+@set cl_link=         /link                                    ^
+                      /LIBPATH:vcpkg_installed\x64-windows\lib ^
+                      /IMPLIB:build\debug\lib\RLibs.lib
 
 @set cl_libs=         user32.lib   ^
                       advapi32.lib ^
