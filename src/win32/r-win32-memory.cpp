@@ -38,13 +38,14 @@ r_win32::memory_align_to_allocation_granularity(
 
 r_external r_memory
 r_win32::memory_reserve(
-    const r_size size) {
+    const r_memory start,
+    const r_size   size) {
 
     const r_size size_aligned = r_win32::memory_align_to_page(size);
 
     r_memory reservation = 
         (r_memory)VirtualAlloc(
-            NULL,
+            start,
             size_aligned,
             MEM_RESERVE,
             PAGE_NOACCESS);
@@ -101,13 +102,14 @@ r_win32::memory_decommit(
 
 r_external r_memory
 r_win32::memory_reserve_and_commit(
-    const r_size size) {
+    const r_memory start,
+    const r_size   size) {
 
     const r_size size_aligned = r_win32::memory_align_to_page(size);
 
     r_memory commit = 
         (r_memory)VirtualAlloc(
-            NULL,
+            start,
             size_aligned,
             MEM_RESERVE | MEM_COMMIT,
             PAGE_READWRITE);
@@ -117,13 +119,14 @@ r_win32::memory_reserve_and_commit(
 
 r_external r_memory
 r_win32::memory_reserve_and_commit_large_pages(
-    const r_size size) {
+    const r_memory start,
+    const r_size   size) {
 
     const r_size size_aligned = r_win32::memory_align_to_large_page(size);
 
     r_memory commit = 
         (r_memory)VirtualAlloc(
-            NULL,
+            start,
             size_aligned,
             MEM_RESERVE | MEM_COMMIT | MEM_LARGE_PAGES,
             PAGE_READWRITE);

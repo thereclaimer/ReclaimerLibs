@@ -1,20 +1,16 @@
 #ifndef R_WIN32_INTERNAL_HPP
 #define R_WIN32_INTERNAL_HPP
 
+#include <r-memory.hpp>
+
 #include "r-win32.hpp"
 #include "r-win32-internal-window.hpp"
 #include "r-win32-internal-rendering.hpp"
 #include "r-win32-internal-file.hpp"
 #include "r-win32-internal-system.hpp"
 
-struct RWin32ContextStack {
-    r_memory  start;
-    r_size    size;
-    r_address position;
-};
-
 struct RWin32Context {
-    RWin32ContextStack stack;
+    RHNDMemoryRegion   region;
     RWin32SystemInfo   system_info;
     RWin32MainArgs     args;
     RWin32Window       window;
@@ -36,9 +32,19 @@ namespace r_win32_internal {
     inline       RWin32Window&      context_get_window      (r_void) { return(_r_win32_context.window);                  }
     inline       RWin32FileTable&   context_get_file_table  (r_void) { return(_r_win32_context.file_table);            }
     
-    r_internal const r_b8     context_stack_can_push     (const r_size size);
-    r_internal       r_memory context_stack_push         (const r_size size);
-    r_internal       r_memory context_stack_push_aligned (const r_size size, const r_size alignment);
+    inline const RHNDMemoryArena
+    context_arena_commit(
+        r_void) {
+        
+        return(r_mem::arena_commit(_r_win32_context.region));
+    }
+    
+    inline const r_b8
+    context_arena_decommit(
+        const RHNDMemoryArena arena_handle) {
+
+        return(r_mem::arena_decommit(arena_handle));
+    }
 
     //---------------------------
     // args

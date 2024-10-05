@@ -84,7 +84,30 @@ r_win32::window_create_centered(
     const r_u32                      height,
     const RWin32RenderingContextType rendering_context,
     const RColorFormat               color_format,
-    const RWin32WindowUseImGui       use_imgui);
+    const RWin32WindowUseImGui       use_imgui) {
+
+    //get the center of the screen
+    const r_s32 screen_width  = GetSystemMetrics(SM_CXSCREEN);
+    const r_s32 screen_height = GetSystemMetrics(SM_CYSCREEN);
+
+    //calculate the offsets
+    const r_s32 screen_offset_x = (screen_width  - width)  / 2;
+    const r_s32 screen_offset_y = (screen_height - height) / 2;
+
+    //pass the center coordinates to the main window creation function
+    const r_b8 result =
+        r_win32::window_create(
+            title,
+            screen_offset_x,
+            screen_offset_y,
+            width,
+            height,
+            color_format,
+            rendering_context,
+            use_imgui);
+
+    return(result);
+}
 
 r_external const r_b8
 r_win32::window_show(r_void) {

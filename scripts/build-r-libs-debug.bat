@@ -80,8 +80,7 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
 
 @set cl_flags=        /Zi ^
                       /LD ^
-                      /MD ^
-                      /O1
+                      /MD
 
 @set cl_output=       /Fe:%path_build_bin%\RLibs.dll ^
                       /Fd:%path_build_bin%\RLibs.pdb ^

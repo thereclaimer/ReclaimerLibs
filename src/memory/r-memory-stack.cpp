@@ -30,7 +30,7 @@ r_mem_internal::stack_can_push(
     RMemoryStack& stack = r_mem_internal::memory_manager_get_stack();
 
     const r_size new_position = stack.position + size;
-    const r_b8 can_push       = new_position > stack.size; 
+    const r_b8 can_push       = new_position < stack.size; 
     
     return(can_push);
 }
