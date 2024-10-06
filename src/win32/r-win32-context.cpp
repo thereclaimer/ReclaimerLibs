@@ -97,6 +97,38 @@ r_win32_internal::context_rendering_context_commit(
     return(rendering_context_ptr);
 }
 
+r_internal RWin32FileTable*
+r_win32_internal::context_file_table_commit(
+    r_void) {
+
+    //get an arena
+    const RHNDMemoryArena file_table_arena_handle = r_win32_internal::context_arena_commit();
+    if (!file_table_arena_handle) {
+        return(NULL);
+    }
+
+    //calculate table size and alignment
+    const r_size file_table_size      = sizeof(RWin32FileTable);
+    const r_size file_table_alignment = alignof(RWin32FileTable);
+
+    //push the table onto the arena
+    RWin32FileTable* file_table_ptr =
+        (RWin32FileTable*)r_mem::arena_push_aligned(
+            file_table_arena_handle,
+            file_table_size,
+            file_table_alignment);
+
+    //if that failed, we're done
+    if (!file_table_ptr) {
+        return(NULL);
+    }
+
+    //set the file table arena, and we're done
+    file_table_ptr->arena_handle = file_table_arena_handle;
+    return(file_table_ptr);
+}
+
+
 r_internal const r_b8                    
 r_win32_internal::context_rendering_context_decommit(
     RWin32RenderingContext* rendering_context_ptr) {

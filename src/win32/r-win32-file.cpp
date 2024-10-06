@@ -7,146 +7,130 @@
 /* EXTERNAL                                                                       */
 /**********************************************************************************/
 
-const r_b8 
-r_win32::file_exists(
-    const r_cstr file_path) {
-    
-}
+r_external const r_b8 file_exists (const r_cstr file_path);
 
-const RWin32FileIndex
-r_win32::file_open_existing(
-    const RWin32FilePermission file_permission, 
-    const r_cstr               file_path) {
-    
-    r_index file_index;
-    if (!r_win32_internal::file_table_next_availabe(file_index)) {
-        return(false);
-    }
+r_external const RWin32FileHandle file_open_existing (const RWin32FilePermission file_permission, const r_cstr file_path);
+r_external const RWin32FileHandle file_create_new    (const r_cstr file_path);
 
+r_external const r_b8   file_close     (const RWin32FileHandle file_handle);
+r_external const r_b8   file_is_open   (const RWin32FileHandle file_handle);
+r_external const r_b8   file_can_write (const RWin32FileHandle file_handle);
+r_external const r_size file_size      (const RWin32FileHandle file_handle);
+r_external const r_cstr file_path      (const RWin32FileHandle file_handle);
 
-    
-}
+r_external const r_b8
+file_read(
+    const RWin32FileHandle in_file_handle,
+    const r_size           in_file_read_start,
+    const r_size           in_file_read_length,
+            r_memory        out_file_read_buffer);
 
-const RWin32FileIndex
-r_win32::file_create_new(
-    const r_cstr file_path) {
-
-}
-
-const r_b8
-r_win32::file_close(
-    const RWin32FileIndex file_handle) {
-
-}
-
-const r_b8
-r_win32::file_is_open(
-    const RWin32FileIndex file_handle) {
-    
-
-
-
-}
-
-const r_b8
-r_win32::file_can_write(
-    const RWin32FileIndex file_handle) {
-
-}
-
-const r_size
-r_win32::file_size(
-    const RWin32FileIndex file_handle) {
-
-}
-
-const r_cstr
-r_win32::file_path(
-    const RWin32FileIndex file_handle) {
-
-}
-
-const r_b8
-r_win32::file_read(
-    const RWin32FileIndex file_handle,
-    const r_size           read_start,
-    const r_size           read_length,
-          r_memory         read_buffer) {
-
-}
-
-const r_b8
-r_win32::file_write(
-    const RWin32FileIndex file_handle,
-    const r_size           write_start,
-    const r_size           write_length,
-          r_memory         write_buffer) {
-
-}
-
+r_external const r_b8
+file_write(
+    const RWin32FileHandle in_file_handle,
+    const r_size           in_file_write_start,
+    const r_size           in_file_write_length,
+            r_memory        out_file_write_buffer);
 
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-r_internal  const r_b8 
-r_win32::file_table_create(
-    const r_size file_count) {
+r_internal const r_size 
+r_win32::file_table_count_open_files(
+    RWin32FileTable* file_table_ptr) {
 
-    RWin32FileTable& file_table = r_win32_internal::context_get_file_table();
-
-    //calculate sizes
-    const r_size column_size_win32_handle = file_count * sizeof(HANDLE);
-    const r_size column_size_size         = file_count * sizeof(r_size);
-    const r_size column_size_permission   = file_count * sizeof(RWin32FilePermission);
-
-    //allocate memory
-    const r_memory column_memory_win32_handle = r_win32_internal::context_stack_push(column_size_win32_handle);
-    const r_memory column_memory_size         = r_win32_internal::context_stack_push(column_size_size);
-    const r_memory column_memory_permission   = r_win32_internal::context_stack_push(column_size_permission);
-
-    //sanity check
-    if (
-        !column_memory_win32_handle ||
-        !column_memory_size         ||
-        !column_memory_permission) {
-
-        return(false);
+    if (!file_table_ptr) {
+        return(0);
     }
 
-    //initialize the table
-    file_table.columns.win32_handle = (HANDLE*)column_memory_win32_handle;
-    file_table.columns.size         = (r_size*)column_memory_size;
-    file_table.columns.permission   = (RWin32FilePermission*)column_memory_permission;
-
+    r_size count = 0;
     for (
-        r_index file_index = 0;
-        file_index < file_count;
-        ++file_index) {
+        r_index file_table_row = 0;
+        file_table_row < file_table_ptr->row_count;
+        ++file_table_row) {
 
-        file_table.columns.win32_handle[file_index] = NULL;
-        file_table.columns.size        [file_index] = 0;
-        file_table.columns.permission  [file_index] = 0;
+        count += file_table_ptr->columns.win32_handle[file_table_row] != NULL ? 1 : 0;
     }
 
-    return(false);
+    return(count);
 }
 
-r_internal const r_b8 
-r_win32_internal::file_table_next_availabe(
-    r_index& file_index) {
-
-    RWin32FileTable& file_table = r_win32_internal::context_get_file_table();
+r_internal const r_b8
+r_win32::file_table_can_add_file(
+    RWin32FileTable* file_table_ptr) {
+    
+    r_b8 can_open = false;
 
     for (
-        file_index = 0;
-        file_index < file_count;
-        ++file_index) {
+        r_index file_table_row = 0;
+        file_table_row < file_table_ptr->row_count;
+        ++file_table_row) {
 
-        if (!file_table.columns.win32_handle[file_index]) {
-            return(true);
+        can_open |= !file_table_ptr->columns.win32_handle[file_table_row];
+    }
+
+    return(can_open);
+}
+
+r_internal RWin32FileTable* 
+r_win32::file_table_next_available(
+    RWin32FileManager& file_manager_ref) {
+
+    RWin32FileTable* next_available_table_ptr = NULL;
+    for (
+        RWin32FileTable* file_table_ptr = file_manager_ref.file_table_list;
+        file_table_ptr != NULL;
+        file_table_ptr = file_table_ptr->next) {
+
+        if (r_win32::file_table_can_add_file(file_table_ptr)) {
+            next_available_table_ptr = file_table_ptr;
+            break;            
         }
     }
 
-    return(false);
+    return(next_available_table_ptr);
+}
+
+r_internal RWin32FileTable* 
+r_win32::file_table_commit(
+    RWin32FileManager& file_manager_ref) {
+
+    //get the file table ptr
+    RWin32FileTable* file_table_ptr = r_win32_internal::context_file_table_commit();
+    if (!file_table_ptr) {
+        return(NULL);
+    }
+
+    //now we need to push the column memory onto the arena
+    //the largest column is the file struct
+    const r_size file_struct_size = sizeof(RWin32File);
+
+    //we need to get how much remaining memory we have in the arena
+    const r_size memory_remaining = r_mem::arena_size_free(file_table_ptr->arena_handle);
+    
+    //this is the amount of columns we have in the table
+    const r_size column_count = 4;
+
+    //this is the total size of each column
+    const r_size column_size = memory_remaining / column_count;
+
+    //the row count is the column size divided by the file struct size
+    file_table_ptr->row_count = column_size / file_struct_size;
+
+    //now we can create the columns
+    file_table_ptr->columns.file         =           (RWin32File*)r_mem::arena_push(file_table_ptr->arena_handle, column_size); 
+    file_table_ptr->columns.win32_handle =               (HANDLE*)r_mem::arena_push(file_table_ptr->arena_handle, column_size); 
+    file_table_ptr->columns.size         =               (r_size*)r_mem::arena_push(file_table_ptr->arena_handle, column_size); 
+    file_table_ptr->columns.permission   = (RWin32FilePermission*)r_mem::arena_push(file_table_ptr->arena_handle, column_size); 
+
+    //add the file table to the list
+    file_table_ptr->next = file_manager_ref.file_table_list; 
+    if (file_manager_ref.file_table_list) {
+        file_manager_ref.file_table_list->previous = file_table_ptr;
+    }
+    file_manager_ref.file_table_list = file_table_ptr;
+
+    //we're done
+    return(file_table_ptr);
 }

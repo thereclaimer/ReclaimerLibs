@@ -86,14 +86,30 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
                       /Fd:%path_build_bin%\RLibs.pdb ^
                       /Fo:%path_build_obj%\RLibs.obj
 
-@set cl_includes=     /I %path_build_include%        ^
-                      /I %path_src_r_algorithms%     ^
-                      /I %path_src_r_common%         ^
-                      /I %path_src_r_datastructures% ^
-                      /I %path_src_r_math%           ^
-                      /I %path_src_r_memory%         ^
-                      /I %path_src_r_string%         ^
-                      /I %path_src_r_win32%
+@set cl_includes=     /I %path_include%                   ^
+                      /I %path_include_r_algorithms%      ^
+                      /I %path_include_r_common%          ^
+                      /I %path_include_r_datastructures%  ^
+                      /I %path_include_r_math%            ^
+                      /I %path_include_r_memory%          ^
+                      /I %path_include_r_string%          ^
+                      /I %path_include_r_win32%           ^
+                      /I %path_internal%                  ^
+                      /I %path_internal_r_algorithms%     ^
+                      /I %path_internal_r_common%         ^
+                      /I %path_internal_r_datastructures% ^
+                      /I %path_internal_r_math%           ^
+                      /I %path_internal_r_memory%         ^
+                      /I %path_internal_r_string%         ^
+                      /I %path_internal_r_win32%          ^
+                      /I %path_src_r_algorithms%          ^
+                      /I %path_src_r_common%              ^
+                      /I %path_src_r_datastructures%      ^
+                      /I %path_src_r_math%                ^
+                      /I %path_src_r_memory%              ^
+                      /I %path_src_r_string%              ^
+                      /I %path_src_r_win32%               ^
+                      /I %path_vcpkg_include%
 
 @set cl_source=       %path_source_file%
 

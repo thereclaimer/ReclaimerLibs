@@ -14,8 +14,7 @@ struct RWin32Context {
     RHNDMemoryRegion   region;
     RWin32SystemInfo   system_info;
     RWin32MainArgs     args;
-    RWin32Window       window;
-    RWin32FileTable    file_table;     
+    RWin32FileManager  file_manager;
 };
 
 r_global RWin32Context _r_win32_context;
@@ -28,11 +27,10 @@ namespace r_win32_internal {
 
     inline const r_b8 context_is_initialized(r_void) { return(_r_win32_context.system_info.time_initialized > 0); } 
     
-    inline       RWin32SystemInfo&  context_get_system_info        (r_void) { return(_r_win32_context.system_info);             }
-    inline       RWin32MainArgs&    context_get_args               (r_void) { return(_r_win32_context.args);                    } 
-    inline       RWin32Window&      context_get_window             (r_void) { return(_r_win32_context.window);                  }
-    inline       RWin32FileTable&   context_get_file_table         (r_void) { return(_r_win32_context.file_table);              }
-    inline       RWin32Window*      context_get_current_window_ptr (r_void) { return(_r_win32_context.current_window_ptr);      }
+    inline       RWin32SystemInfo&  context_get_system_info        (r_void) { return(_r_win32_context.system_info);        }
+    inline       RWin32MainArgs&    context_get_args               (r_void) { return(_r_win32_context.args);               } 
+    inline       RWin32Window*      context_get_current_window_ptr (r_void) { return(_r_win32_context.current_window_ptr); }
+    inline       RWin32FileManager& context_get_file_manager       (r_void) { return(_r_win32_context.file_manager);       }
     
     inline r_void context_set_current_window_ptr (RWin32Window* current_window_ptr) { _r_win32_context.current_window_ptr = current_window_ptr; }
 
@@ -52,6 +50,7 @@ namespace r_win32_internal {
 
     r_internal RWin32RenderingContext* context_rendering_context_commit   (r_void);
     r_internal RWin32Window*           context_window_commit              (r_void);
+    r_internal RWin32FileTable*        context_file_table_commit          (r_void);
 
     r_internal const r_b8 context_window_decommit            (RWin32Window* window_ptr);
     r_internal const r_b8 context_rendering_context_decommit (RWin32RenderingContext* rendering_context_ptr);
@@ -64,10 +63,6 @@ namespace r_win32_internal {
     inline const HINSTANCE main_args_get_h_prev_instance (r_void) { return(_r_win32_context.args.h_prev_instance); }
     inline const PWSTR     main_args_get_p_cmd_line      (r_void) { return(_r_win32_context.args.p_cmd_line);      }
     inline const int       main_args_get_n_cmd_show      (r_void) { return(_r_win32_context.args.n_cmd_show);      }    
-
-    //---------------------------
-    // file
-    //---------------------------
 
 };
 
