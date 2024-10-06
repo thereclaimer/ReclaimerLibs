@@ -4,9 +4,7 @@
 
 r_external const r_b8
 r_win32::context_create(
-          RWin32MainArgs& r_win32_args,
-    const r_size          file_count_max,
-    const r_size          stack_size) {
+    RWin32MainArgs& r_win32_args) {
 
     r_b8 result = true;
 

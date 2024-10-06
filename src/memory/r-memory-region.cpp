@@ -223,8 +223,14 @@ r_mem_internal::region_list_add(
 
     RMemoryRegionList& region_list = reservation_ptr->region_list;
 
-    region_ptr->arena_start  = region_list.next_arena_start;
+    //calculate the starting arena address
+    const r_memory reservation_start         = reservation_ptr->start;
+    const r_size   reservation_size_occupied = reservation_ptr->region_list.total_size; 
+    const r_memory region_arena_start        = reservation_start + reservation_size_occupied;  
+
+    region_ptr->arena_start  = region_arena_start;
     region_ptr->region_index = region_list.count;
+
 
     if (!region_list.first) {
         region_list.first = region_ptr;
@@ -234,7 +240,6 @@ r_mem_internal::region_list_add(
     region_list.last->next        = region_ptr;
     region_list.last              = region_ptr;
     region_list.total_size       += region_ptr->region_size;
-    region_list.next_arena_start += region_ptr->region_size;
 }
 
 r_internal const r_b8 

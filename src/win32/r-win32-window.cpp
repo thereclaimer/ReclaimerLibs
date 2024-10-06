@@ -119,10 +119,11 @@ r_win32::window_show(const RHNDWin32Window window_handle) {
         return(false);
     }
 
-    const RWin32Window* window_ptr   = (RWin32Window*)window_handle;
-    const HWND          window_win32 = window_ptr->win32_handle_window;
+    RWin32Window* window_ptr = (RWin32Window*)window_handle;
 
-    return((r_b8)ShowWindow(window_win32,1));
+    r_win32_internal::context_set_current_window_ptr(window_ptr);
+
+    return((r_b8)ShowWindow(window_ptr->win32_handle_window,1));
 }
 
 r_external const r_b8

@@ -47,7 +47,6 @@ struct RMemoryRegionList{
     RMemoryRegion* last;
     r_size         count;
     r_size         total_size;
-    r_memory       next_arena_start;
 };
 
 namespace r_mem_internal {
