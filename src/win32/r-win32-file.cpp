@@ -100,6 +100,36 @@ r_external const r_b8
 r_win32::file_close(
     const RWin32FileHandle file_handle) {
 
+    //get the file
+    RWin32File* file_ptr = (RWin32File*)file_handle;
+
+    //get the table
+    RWin32FileTable* file_table_ptr = r_win32_internal::file_table_from_file(file_ptr);
+
+    //sanity check
+    if (
+        !file_ptr       ||
+        !file_table_ptr ||
+        file_ptr->file_index  >= file_table_ptr->row_count) {
+
+        return(false);
+    }
+
+    //close the handle
+    if (!CloseHandle(
+        file_table_ptr->columns.win32_handle[file_ptr->file_index])) {
+
+        return(false);
+    }
+
+    //update the table
+    file_table_ptr->columns.win32_handle[file_ptr->file_index] = NULL;
+
+    //now, if there's no other files open in this table, we can decommit it
+    if (r_win32_internal::file_table_count_open_files(file_table_ptr) == 0) {
+
+    }
+
     return(true);
 }
 
@@ -166,7 +196,44 @@ r_win32::file_read(
     const r_size           in_file_read_length,
           r_memory        out_file_read_buffer) {
 
-    return(true);
+    //sanity check
+    if (
+        in_file_handle       != NULL &&
+        in_file_read_length  > 0     &&
+        out_file_read_buffer != NULL) {
+
+        return(false);
+    }
+
+    //get the stuff we need
+    RWin32File*      file_ptr       = (RWin32File*)in_file_handle;
+    RWin32FileTable* file_table_ptr = r_win32_internal::file_table_from_file(file_ptr);
+
+    const HANDLE file_win32_handle = file_table_ptr->columns.win32_handle[file_ptr->file_index]; 
+    const r_size file_size         = file_table_ptr->columns.size        [file_ptr->file_index]; 
+
+    //make sure we can do the read
+    if (
+        file_win32_handle == NULL ||
+        file_size         == 0    ||
+        in_file_read_start + in_file_read_length) {
+
+        return(false);
+    }
+
+    //do the read
+    OVERLAPPED overlapped = {0};
+    overlapped.Offset = in_file_read_start;
+    const r_b8 result = 
+        ReadFileEx(
+            file_win32_handle,
+            out_file_read_buffer,
+            in_file_read_length,
+            &overlapped,
+            r_win32_internal::file_io_completion_routine);
+
+    //we're done
+    return(result);
 }
 
 r_external const r_b8
@@ -182,6 +249,17 @@ r_win32::file_write(
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
+
+r_global DWORD bytes_read = 0;
+
+r_internal r_void CALLBACK
+r_win32_internal::file_io_completion_routine(
+    DWORD        error_code,
+    DWORD        bytes_transferred,
+    LPOVERLAPPED overlapped_ptr) {
+
+    bytes_read = bytes_transferred;
+}
 
 r_internal const r_size 
 r_win32_internal::file_table_count_open_files(
@@ -294,6 +372,36 @@ r_win32_internal::file_table_commit(
     //we're done
     return(file_table_ptr);
 }
+
+r_internal const r_b8
+r_win32_internal::file_table_decommit(
+    RWin32FileManager& file_manager_ref,
+    RWin32FileTable*   file_table_ptr) {
+
+    if (!file_table_ptr) {
+        return(false);
+    }
+
+    //update the list
+    if (file_table_ptr->previous) {
+        file_table_ptr->previous->next = file_table_ptr->next;
+    }
+
+    if (file_table_ptr->next) {
+        file_table_ptr->next->previous = file_table_ptr->previous;
+    }
+
+    if (file_manager_ref.file_table_list == file_table_ptr) {
+        file_manager_ref.file_table_list = file_table_ptr->next;
+    }
+
+    //now, we can decommit the arena
+    const r_b8 result = r_win32_internal::context_arena_decommit(file_table_ptr->arena_handle);
+
+    //we're done
+    return(result);
+}
+
 
 r_internal const r_b8 
 r_win32_internal::file_next_available(

@@ -27,11 +27,18 @@ struct RWin32FileManager {
 
 namespace r_win32_internal {
 
+    r_internal r_void CALLBACK
+    file_io_completion_routine(
+        DWORD        error_code,
+        DWORD        bytes_transferred,
+        LPOVERLAPPED overlapped_ptr);
+
     r_internal const r_size file_table_count_open_files(RWin32FileTable* file_table_ptr);
     r_internal const r_b8   file_table_can_add_file    (RWin32FileTable* file_table_ptr);
 
     r_internal RWin32FileTable* file_table_next_available (RWin32FileManager& file_manager_ref);
     r_internal RWin32FileTable* file_table_commit         (RWin32FileManager& file_manager_ref);
+    r_internal const r_b8       file_table_decommit       (RWin32FileManager& file_manager_ref, RWin32FileTable* file_table_ptr);
 
     r_internal const r_b8 
     file_next_available(
