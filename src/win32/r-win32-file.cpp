@@ -302,12 +302,13 @@ r_win32_internal::file_next_available(
 
     //loop through the file table for an available index
     for (
-          out_file_ref.file_index = 0;
-          out_file_ref.file_index < in_file_table_ptr->row_count;
-        ++out_file_ref.file_index) {
+        r_index file_index = 0;
+        file_index < in_file_table_ptr->row_count;
+        ++file_index) {
 
         //theres no file handle, its available and we're done
-        if (!in_file_table_ptr->columns.win32_handle[out_file_ref.file_index]) {
+        if (!in_file_table_ptr->columns.win32_handle[file_index]) {
+            out_file_ref = in_file_table_ptr->columns.file[file_index];
             return(true);
         }
     }

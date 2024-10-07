@@ -164,7 +164,7 @@ r_mem::arena_at_index_is_committed(
 
     //get the arena
     RMemoryArena* arena_ptr =  (RMemoryArena*)r_mem::arena_at_index(region_ptr,arena_index);
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
@@ -178,7 +178,7 @@ r_mem::arena_size_total(
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
@@ -198,7 +198,7 @@ r_mem::arena_size_used(
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
@@ -212,7 +212,7 @@ r_mem::arena_size_free(
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
