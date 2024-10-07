@@ -5,3 +5,4 @@
 #include "r-win32-window.cpp"
 #include "r-win32-system.cpp"
 #include "r-win32-rendering.cpp"
+#include "r-win32-file.cpp"
