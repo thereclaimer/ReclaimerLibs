@@ -149,6 +149,9 @@ namespace r_mem {
     r_external const r_b8 arena_can_pull_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
 };
 
+#define r_mem_arena_push_struct(arena,struct)    (struct*)r_mem::arena_push_aligned(arena,sizeof(struct),alignof(struct))
+#define r_mem_arena_push_array(arena,count,type)   (type*)r_mem::arena_push(arena,sizeof(type) * count)
+
 /**********************************************************************************/
 /* BLOCK ALLOCATOR                                                                */
 /**********************************************************************************/

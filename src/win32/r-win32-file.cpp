@@ -222,8 +222,7 @@ r_win32::file_read(
     }
 
     //set the read offset in the overlapped structure
-    OVERLAPPED* overlapped_ptr = r_win32_internal::file_table_overlapped(file_ptr);
-    overlapped_ptr->Offset = in_file_read_start;
+    file_ptr->overlapped.Offset = in_file_read_start;
     
     //do the read
     const r_b8 result = 
@@ -231,7 +230,7 @@ r_win32::file_read(
             file_win32_handle,
             out_file_read_buffer,
             in_file_read_length,
-            overlapped_ptr,
+            &file_ptr->overlapped,
             r_win32_internal::file_io_completion_routine);
 
     //we're done
@@ -259,6 +258,8 @@ r_win32_internal::file_io_completion_routine(
     DWORD        error_code,
     DWORD        bytes_transferred,
     LPOVERLAPPED overlapped_ptr) {
+
+    //TODO: write bytes transferred to the file table
 
     bytes_read = bytes_transferred;
 }
