@@ -18,6 +18,7 @@ struct RWin32FileTable {
         HANDLE*               win32_handle;
         r_size*               size;
         RWin32FilePermission* permission;
+        OVERLAPPED*           overlapped;
     } columns;
 };
 
@@ -112,6 +113,20 @@ namespace r_win32_internal {
         return(file_size);
     }
 
+    inline OVERLAPPED*
+    file_table_overlapped(
+        RWin32File* file_ptr) {
+
+        //get the file table
+        RWin32FileTable* file_table_ptr = r_win32_internal::file_table_from_file(file_ptr); 
+
+        //get the overlapped structure
+        OVERLAPPED* file_overlapped = 
+            &file_table_ptr->columns.overlapped[file_ptr->file_index];
+
+        //we're done
+        return(file_overlapped);
+    }
 };
 
 #endif //R_WIN32_INTERNAL_FILE_HPP

@@ -127,7 +127,7 @@ r_win32::file_close(
 
     //now, if there's no other files open in this table, we can decommit it
     if (r_win32_internal::file_table_count_open_files(file_table_ptr) == 0) {
-
+        //TODO
     }
 
     return(true);
@@ -221,15 +221,17 @@ r_win32::file_read(
         return(false);
     }
 
+    //set the read offset in the overlapped structure
+    OVERLAPPED* overlapped_ptr = r_win32_internal::file_table_overlapped(file_ptr);
+    overlapped_ptr->Offset = in_file_read_start;
+    
     //do the read
-    OVERLAPPED overlapped = {0};
-    overlapped.Offset = in_file_read_start;
     const r_b8 result = 
         ReadFileEx(
             file_win32_handle,
             out_file_read_buffer,
             in_file_read_length,
-            &overlapped,
+            overlapped_ptr,
             r_win32_internal::file_io_completion_routine);
 
     //we're done
