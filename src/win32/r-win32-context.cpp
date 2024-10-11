@@ -24,7 +24,7 @@ r_win32::context_destroy(
 
 r_external const r_b8 
 r_win32::context_set_memory_region(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     _r_win32_context.region = region_handle;
 
@@ -36,7 +36,7 @@ r_internal RWin32Window*
 r_win32_internal::context_window_commit(
     r_void) {
 
-    const RHNDMemoryArena window_arena_handle = r_win32_internal::context_arena_commit();
+    const RMemoryArenaHandle window_arena_handle = r_win32_internal::context_arena_commit();
     if (!window_arena_handle) {
         return(NULL);
     }
@@ -74,7 +74,7 @@ r_internal RWin32RenderingContext*
 r_win32_internal::context_rendering_context_commit(
     r_void) {
 
-    const RHNDMemoryArena rendering_context_arena_handle = r_win32_internal::context_arena_commit();
+    const RMemoryArenaHandle rendering_context_arena_handle = r_win32_internal::context_arena_commit();
     if (!rendering_context_arena_handle) {
         return(NULL);
     }
@@ -102,7 +102,7 @@ r_win32_internal::context_file_table_commit(
     r_void) {
 
     //get an arena
-    const RHNDMemoryArena file_table_arena_handle = r_win32_internal::context_arena_commit();
+    const RMemoryArenaHandle file_table_arena_handle = r_win32_internal::context_arena_commit();
     if (!file_table_arena_handle) {
         return(NULL);
     }

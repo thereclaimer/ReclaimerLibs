@@ -12,7 +12,7 @@ typedef LRESULT
     LPARAM l_param);
 
 struct RWin32Window {
-    RHNDMemoryArena         arena;
+    RMemoryArenaHandle         arena;
     HWND                    win32_handle_window;
     HDC                     win32_handle_device_context;
     MSG                     message;

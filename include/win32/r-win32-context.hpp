@@ -13,7 +13,7 @@ namespace r_win32 {
 
     r_external const r_b8 context_destroy (r_void);
 
-    r_external const r_b8 context_set_memory_region(const RHNDMemoryRegion region_handle);
+    r_external const r_b8 context_set_memory_region(const RMemoryRegionHandle region_handle);
 };
 
 

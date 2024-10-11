@@ -6,7 +6,7 @@
 /* EXTERNAL                                                                       */
 /**********************************************************************************/
 
-r_external const RHNDMemoryReservation 
+r_external const RMemoryReservationHandle 
 r_mem::reserve(
     const r_cstr reservation_tag,
     const r_size minimum_reservation_size) {
@@ -55,7 +55,7 @@ r_mem::reserve(
 
 r_external const r_size 
 r_mem::reservation_size_total(
-    const RHNDMemoryReservation reservation_handle) {
+    const RMemoryReservationHandle reservation_handle) {
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
     
@@ -64,7 +64,7 @@ r_mem::reservation_size_total(
 
 r_external const r_size 
 r_mem::reservation_size_used(
-    const RHNDMemoryReservation reservation_handle) {
+    const RMemoryReservationHandle reservation_handle) {
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
 
@@ -78,7 +78,7 @@ r_mem::reservation_size_used(
 
 r_external const r_size 
 r_mem::reservation_size_free(
-    const RHNDMemoryReservation reservation_handle) {
+    const RMemoryReservationHandle reservation_handle) {
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
 
@@ -105,14 +105,14 @@ r_mem::reservation_list_count() {
 
 r_external const r_size 
 r_mem::reservation_arena_region_count(
-    const RHNDMemoryReservation reservation_handle) {
+    const RMemoryReservationHandle reservation_handle) {
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
 
     return (reservation_ptr ? reservation_ptr->region_list.count : 0);
 }
 
-r_external const RHNDMemoryReservation 
+r_external const RMemoryReservationHandle 
 r_mem::reservation_list(r_void) {
 
     RMemoryReservationList& reservation_list = r_mem_internal::memory_manager_get_reservation_list();
@@ -120,16 +120,16 @@ r_mem::reservation_list(r_void) {
     return(reservation_list.first);
 }
 
-r_external const RHNDMemoryReservation 
+r_external const RMemoryReservationHandle 
 r_mem::reservation_next(
-    const RHNDMemoryReservation reservation_handle) {
+    const RMemoryReservationHandle reservation_handle) {
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
 
     return (reservation_ptr ? reservation_ptr->next : NULL);
 }
 
-r_external const RHNDMemoryReservation 
+r_external const RMemoryReservationHandle 
 r_mem::reservation_at_index(
     const r_index reservation_index) {
     

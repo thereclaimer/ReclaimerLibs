@@ -6,9 +6,9 @@
 /* EXTERNAL                                                                       */
 /**********************************************************************************/
 
-r_external const RHNDMemoryArena 
+r_external const RMemoryArenaHandle 
 r_mem::arena_at_index(
-    const RHNDMemoryRegion region_handle,
+    const RMemoryRegionHandle region_handle,
     const r_index          arena_index) {
 
     //get the region
@@ -25,9 +25,9 @@ r_mem::arena_at_index(
     return(&region_ptr->arenas[arena_index]);
 }
 
-r_external const RHNDMemoryArena
+r_external const RMemoryArenaHandle
 r_mem::arena_commit(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     //get the region
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle); 
@@ -55,9 +55,9 @@ r_mem::arena_commit(
     return(committed_arena);
 }
 
-r_external const RHNDMemoryArena
+r_external const RMemoryArenaHandle
 r_mem::arena_commit_next(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena and region
     RMemoryArena*  arena_ptr  = r_mem_internal::arena_from_handle(arena_handle);
@@ -91,9 +91,9 @@ r_mem::arena_commit_next(
     return(commit_result ? next_arena : NULL);
 }
 
-r_external const RHNDMemoryArena
+r_external const RMemoryArenaHandle
 r_mem::arena_commit_index(
-    const RHNDMemoryRegion region_handle,
+    const RMemoryRegionHandle region_handle,
     const r_index          arena_index) {
 
     //get the region
@@ -113,7 +113,7 @@ r_mem::arena_commit_index(
 
 r_external const r_b8
 r_mem::arena_decommit(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);
@@ -139,7 +139,7 @@ r_mem::arena_decommit(
 
 r_external const r_b8
 r_mem::arena_is_committed(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);
@@ -153,7 +153,7 @@ r_mem::arena_is_committed(
 
 r_external const r_b8
 r_mem::arena_at_index_is_committed(
-    const RHNDMemoryRegion region_handle,
+    const RMemoryRegionHandle region_handle,
     const r_index          arena_index) {
 
     //get the region
@@ -174,7 +174,7 @@ r_mem::arena_at_index_is_committed(
 
 r_external const r_size
 r_mem::arena_size_total(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
@@ -194,7 +194,7 @@ r_mem::arena_size_total(
 
 r_external const r_size
 r_mem::arena_size_used(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
@@ -208,7 +208,7 @@ r_mem::arena_size_used(
 
 r_external const r_size
 r_mem::arena_size_free(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
@@ -229,7 +229,7 @@ r_mem::arena_size_free(
 
 r_external const r_memory
 r_mem::arena_push(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //first make sure we can push
@@ -257,7 +257,7 @@ r_mem::arena_push(
 
 r_external const r_memory
 r_mem::arena_pull(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //first make sure we can pull
@@ -288,7 +288,7 @@ r_mem::arena_pull(
 
 r_external const r_memory
 r_mem::arena_push_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 
@@ -303,7 +303,7 @@ r_mem::arena_push_aligned(
 
 r_external const r_memory
 r_mem::arena_pull_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 
@@ -318,7 +318,7 @@ r_mem::arena_pull_aligned(
 
 r_external const r_b8
 r_mem::arena_can_push(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //get the arena
@@ -342,7 +342,7 @@ r_mem::arena_can_push(
 
 r_external const r_b8
 r_mem::arena_can_pull(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //get the arena
@@ -357,7 +357,7 @@ r_mem::arena_can_pull(
 
 r_external const r_b8
 r_mem::arena_can_push_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 
@@ -369,7 +369,7 @@ r_mem::arena_can_push_aligned(
 
 r_external const r_b8
 r_mem::arena_can_pull_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 

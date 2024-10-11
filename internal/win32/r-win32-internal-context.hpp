@@ -11,7 +11,7 @@
 
 struct RWin32Context {
     RWin32Window*      current_window_ptr;
-    RHNDMemoryRegion   region;
+    RMemoryRegionHandle   region;
     RWin32SystemInfo   system_info;
     RWin32MainArgs     args;
     RWin32FileManager  file_manager;
@@ -34,7 +34,7 @@ namespace r_win32_internal {
     
     inline r_void context_set_current_window_ptr (RWin32Window* current_window_ptr) { _r_win32_context.current_window_ptr = current_window_ptr; }
 
-    inline const RHNDMemoryArena
+    inline const RMemoryArenaHandle
     context_arena_commit(
         r_void) {
         
@@ -43,7 +43,7 @@ namespace r_win32_internal {
     
     inline const r_b8
     context_arena_decommit(
-        const RHNDMemoryArena arena_handle) {
+        const RMemoryArenaHandle arena_handle) {
 
         return(r_mem::arena_decommit(arena_handle));
     }

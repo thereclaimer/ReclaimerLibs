@@ -12,7 +12,7 @@ struct RWin32File {
 
 
 struct RWin32FileTable {
-    RHNDMemoryArena  arena_handle;
+    RMemoryArenaHandle  arena_handle;
     RWin32FileTable* next;
     RWin32FileTable* previous;
     r_size           row_count;

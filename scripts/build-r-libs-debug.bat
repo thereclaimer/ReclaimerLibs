@@ -25,6 +25,7 @@ pushd ..
 @set path_include_r_algorithms=      %path_include%\algorithms
 @set path_include_r_common=          %path_include%\common
 @set path_include_r_datastructures=  %path_include%\data-structures
+@set path_include_r_external=        %path_include%\external
 @set path_include_r_math=            %path_include%\math
 @set path_include_r_memory=          %path_include%\memory
 @set path_include_r_string=          %path_include%\string
@@ -90,6 +91,7 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
                       /I %path_include_r_algorithms%      ^
                       /I %path_include_r_common%          ^
                       /I %path_include_r_datastructures%  ^
+                      /I %path_include_r_external%        ^
                       /I %path_include_r_math%            ^
                       /I %path_include_r_memory%          ^
                       /I %path_include_r_string%          ^

@@ -14,7 +14,7 @@ struct RWin32RenderingContextDX3D {
 };
 
 struct RWin32RenderingContext {
-    RHNDMemoryArena            arena;
+    RMemoryArenaHandle            arena;
     RWin32RenderingContextType type;
     RWin32RenderingViewport    viewport;
     RColor32BitNormalized      clear_color;
