@@ -15,6 +15,10 @@ typedef r_handle RMemoryDoubleStackAllocatorHandle;
 /* SIZES                                                                          */
 /**********************************************************************************/
 
+#define r_memory_size_kilobytes(size) size * 1024
+#define r_memory_size_megabytes(size) size * 1024 * 1024
+#define r_memory_size_gigabytes(size) size * 1024 * 1024 * 1024 
+
 namespace r_mem {
 
     inline const r_size size_kilobytes(const r_size size) { return(size * 1024);               }

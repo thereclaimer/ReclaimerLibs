@@ -18,7 +18,6 @@ struct RHash128 {
     };
 };
 
-
 namespace r_hash {
 
     r_external const r_b8 
@@ -42,5 +41,12 @@ namespace r_hash {
     
     r_external const RHashTableIndex hash_table_add(const r_cstr string);
 };
+
+
+struct RHashTableManager {
+    RMemoryRegionHandle region;
+    
+};
+
 
 #endif //R_DATA_STRUCTURES_HASH_HPP
