@@ -38,6 +38,8 @@ typedef size_t   r_size;
 typedef size_t   r_index;
 typedef intptr_t r_address;
 
+#define R_INVALID_INDEX SIZE_MAX
+
 //time
 typedef uint64_t r_timems;
 
