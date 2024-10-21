@@ -31,5 +31,8 @@ r_win32::imgui_create_context(
         imgui_context = NULL;
     }
 
+    //set the imgui context in the window
+    window_ptr->imgui_context = imgui_context;
+
     return(imgui_context);
 }

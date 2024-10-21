@@ -12,7 +12,7 @@ typedef LRESULT
     LPARAM l_param);
 
 struct RWin32Window {
-    RMemoryArenaHandle         arena;
+    RMemoryArenaHandle      arena;
     HWND                    win32_handle_window;
     HDC                     win32_handle_device_context;
     MSG                     message;
@@ -25,6 +25,7 @@ struct RWin32Window {
     r_u64                   frame_system_ticks_start;
     r_u64                   frame_system_ticks_render;
     RWin32RenderingContext* rendering_context_ptr;
+    ImGuiContext*           imgui_context;
 };
 
 namespace r_win32_internal {

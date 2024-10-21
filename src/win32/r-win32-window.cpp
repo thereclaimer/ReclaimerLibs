@@ -173,6 +173,13 @@ r_win32::window_frame_start(
     //set the frame start ticks
     const r_u64 ticks_frame_start = r_win32::system_ticks();
 
+    //if we have an imgui context, start a new frame
+    if (window_ptr->imgui_context) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+    }
+
     //get the window message
     MSG& window_message = window_ptr->message; 
 
@@ -202,6 +209,12 @@ r_win32::window_frame_render(
     }
 
     RWin32Window* window_ptr = (RWin32Window*)window_handle;
+
+    //if we have an imgui context, render the draw data
+    if (window_ptr->imgui_context) {
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
 
     //swap the buffers
     SwapBuffers(window_ptr->win32_handle_device_context);
