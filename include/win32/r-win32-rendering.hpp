@@ -25,7 +25,7 @@ namespace r_win32 {
 
     r_external const RWin32RenderingContextHandle 
     rendering_create_opengl_context(
-        const RHNDWin32Window window_handle);
+        const RWin32WindowHandle window_handle);
     
     r_external const r_b8 
     rendering_set_clear_color(

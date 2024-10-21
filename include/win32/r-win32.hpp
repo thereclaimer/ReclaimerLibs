@@ -6,6 +6,7 @@
 
 #include "r-win32-context.hpp"
 #include "r-win32-file.hpp"
+#include "r-win32-imgui.hpp"
 #include "r-win32-main.hpp"
 #include "r-win32-memory.hpp"
 #include "r-win32-monitor.hpp"

@@ -6,7 +6,7 @@
 /* EXTERNAL                                                                       */
 /**********************************************************************************/
 
-r_external const RHNDWin32Window
+r_external const RWin32WindowHandle
 r_win32::window_create(
     const r_cstr                     title,
     const r_u32                      position_x,
@@ -82,7 +82,7 @@ r_win32::window_create(
     return(window_ptr);
 }
 
-r_external const RHNDWin32Window
+r_external const RWin32WindowHandle
 r_win32::window_create_centered(
     const r_cstr                     title,
     const r_u32                      width,
@@ -99,7 +99,7 @@ r_win32::window_create_centered(
     const r_s32 screen_offset_y = (screen_height - height) / 2;
 
     //pass the center coordinates to the main window creation function
-    const RHNDWin32Window window_handle =
+    const RWin32WindowHandle window_handle =
         r_win32::window_create(
             title,
             screen_offset_x,
@@ -113,7 +113,7 @@ r_win32::window_create_centered(
 }
 
 r_external const r_b8
-r_win32::window_show(const RHNDWin32Window window_handle) {
+r_win32::window_show(const RWin32WindowHandle window_handle) {
 
     if (!window_handle) {
         return(false);
@@ -127,7 +127,7 @@ r_win32::window_show(const RHNDWin32Window window_handle) {
 }
 
 r_external const r_b8
-r_win32::window_hide(const RHNDWin32Window window_handle) {
+r_win32::window_hide(const RWin32WindowHandle window_handle) {
 
     if (!window_handle) {
         return(false);
@@ -141,7 +141,7 @@ r_win32::window_hide(const RHNDWin32Window window_handle) {
 
 r_external r_b8 
 r_win32::window_dimensions(
-    const RHNDWin32Window          in_window_handle,
+    const RWin32WindowHandle          in_window_handle,
           RWin32WindowDimensions& out_window_dimensions_ref) {
 
     if (!in_window_handle) {
@@ -159,7 +159,7 @@ r_win32::window_dimensions(
 
 r_external const r_b8
 r_win32::window_frame_start(
-    const RHNDWin32Window window_handle) {
+    const RWin32WindowHandle window_handle) {
 
     if (!window_handle) {
         return(false);
@@ -195,7 +195,7 @@ r_win32::window_frame_start(
 
 r_external const r_b8
 r_win32::window_frame_render(
-    const RHNDWin32Window window_handle) {
+    const RWin32WindowHandle window_handle) {
 
     if (!window_handle) {
         return(false);
@@ -215,7 +215,7 @@ r_win32::window_frame_render(
 
 r_external const r_timems
 r_win32::window_frame_delta_time_ms(
-    const RHNDWin32Window window_handle) {
+    const RWin32WindowHandle window_handle) {
 
     if (!window_handle) {
         return(false);

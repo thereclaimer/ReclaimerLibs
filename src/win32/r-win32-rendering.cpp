@@ -11,7 +11,7 @@
 
 r_external const RWin32RenderingContextHandle 
 r_win32::rendering_create_opengl_context(
-    const RHNDWin32Window window_handle) {
+    const RWin32WindowHandle window_handle) {
 
 
     if(!window_handle) {
