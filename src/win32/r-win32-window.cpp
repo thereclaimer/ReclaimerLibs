@@ -325,6 +325,21 @@ r_win32_internal::window_callback(
 
     r_win32_funcptr_window_on_wm_message wm_message_handler = NULL;
 
+    RWin32Window* current_window_ptr = r_win32_internal::context_get_current_window_ptr();
+    if (current_window_ptr && current_window_ptr->imgui_context) {
+        
+        const LRESULT imgui_result =
+            ImGui_ImplWin32_WndProcHandler(
+                window_handle,
+                message,
+                w_param,
+                l_param);
+
+        if (imgui_result) {
+            return(true);
+        }
+    }
+
     switch (message) {
 
         case WM_SIZE:    wm_message_handler = window_on_wm_size;    break; 
