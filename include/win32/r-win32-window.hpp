@@ -51,6 +51,8 @@ namespace r_win32 {
     r_external const r_b8     window_frame_start         (const RWin32WindowHandle window_handle);
     r_external const r_b8     window_frame_render        (const RWin32WindowHandle window_handle);
     r_external const r_timems window_frame_delta_time_ms (const RWin32WindowHandle window_handle);
+
+    r_external const HWND window_win32_handle(const RWin32WindowHandle window_handle);
 };
 
 #endif //R_WIN32_WINDOW_HPP

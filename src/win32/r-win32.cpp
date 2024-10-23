@@ -1,6 +1,7 @@
 #pragma once
 
 #include "r-win32-context.cpp"
+#include "r-win32-file-dialog.cpp"
 #include "r-win32-file.cpp"
 #include "r-win32-imgui.cpp"
 #include "r-win32-memory.cpp"

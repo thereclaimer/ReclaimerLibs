@@ -10,11 +10,11 @@
 #include "r-win32-internal-system.hpp"
 
 struct RWin32Context {
-    RWin32Window*      current_window_ptr;
-    RMemoryRegionHandle   region;
-    RWin32SystemInfo   system_info;
-    RWin32MainArgs     args;
-    RWin32FileManager  file_manager;
+    RWin32Window*       current_window_ptr;
+    RMemoryRegionHandle region;
+    RWin32SystemInfo    system_info;
+    RWin32MainArgs      args;
+    RWin32FileManager   file_manager;
 };
 
 r_global RWin32Context _r_win32_context;

@@ -250,6 +250,19 @@ r_win32::window_frame_delta_time_ms(
     return(delta_time_ms);
 }
 
+r_external const HWND 
+r_win32::window_win32_handle(
+    const RWin32WindowHandle window_handle) {
+
+    if (!window_handle) {
+        return(false);
+    }
+
+    RWin32Window* window_ptr = (RWin32Window*)window_handle;
+
+    return(window_ptr->win32_handle_window);
+}
+
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/

@@ -125,7 +125,10 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
                       opengl32.lib ^
                       glew32.lib   ^
                       GlU32.Lib    ^
-                      imgui.lib
+                      imgui.lib    ^
+                      Comdlg32.lib ^
+                      shell32.lib  ^
+                      Ole32.lib
 
 ::----------------------------------------------------------------
 :: COMPILE
