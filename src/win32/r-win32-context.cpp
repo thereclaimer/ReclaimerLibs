@@ -1,5 +1,7 @@
 #pragma once
 
+#include <shlobj_core.h> 
+
 #include "r-win32-internal-context.hpp"
 
 r_external const r_b8
@@ -9,6 +11,10 @@ r_win32::context_create(
     r_b8 result = true;
 
     r_win32_internal::system_info_get();
+
+    HRESULT win32_result = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+    result &= SUCCEEDED(win32_result);
 
     return(result);
 }
