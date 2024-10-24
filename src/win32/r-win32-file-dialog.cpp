@@ -67,20 +67,18 @@ r_win32::file_dialog_destroy(
 r_external const r_b8 
 r_win32::file_dialog_select_file(
     const RWin32FileDialogHandle file_dialog_handle,
-    const r_cstr                 starting_directory,
-    const r_size                 extension_count,
-    const r_size                 extension_stride,
-    const r_cstr                 extension_buffer) {
+    const r_cstr                 file_dialog_starting_directory,
+    const r_size                 file_type_count,
+    const r_wstr*                file_type_name_wstr_ptr,
+    const r_wstr*                file_type_spec_wstr_ptr) {
 
     //sanity check
     if (
-        in_file_dialog_handle        == NULL ||
-        in_starting_directory        == NULL ||
-        in_extension_count           == 0    ||
-        in_extension_stride          == 0    ||
-        in_extension_buffer          == NULL ||
-        in_selected_file_buffer_size == 0    ||
-        out_selected_file_buffer     == NULL) {
+        file_dialog_handle             == NULL ||
+        file_dialog_starting_directory == NULL ||
+        file_type_count                == 0    ||
+        file_type_name_wstr_ptr        == NULL ||
+        file_type_spec_wstr_ptr        == NULL) {
 
         return(false);
     }
@@ -88,7 +86,46 @@ r_win32::file_dialog_select_file(
     HRESULT win32_result;
 
     //cast the file dialog
-    RWin32FileDialog* file_dialog_ptr = (RWin32FileDialog*)in_file_dialog_handle;
+    RWin32FileDialog* file_dialog_ptr = (RWin32FileDialog*)file_dialog_handle;
+
+    //cache the arena
+    const RMemoryArenaHandle file_dialog_arena = file_dialog_ptr->arena_handle;
+
+    //push the file types on the arena
+    file_dialog_ptr->win32_file_types_ptr = r_mem_arena_push_array(file_dialog_arena,file_type_count,COMDLG_FILTERSPEC);
+
+    //sanity check, make sure we have our memory
+    if (file_dialog_ptr->win32_file_types_ptr == NULL) {
+
+        return(false);
+    }
+
+    //initialize the file types
+    for (
+        r_index file_type_index = 0;
+        file_type_index < file_type_count;
+        ++file_type_index) {
+
+        //cache the string arguments
+        const r_wstr in_file_type_name_current = file_type_name_wstr_ptr[file_type_index];
+        const r_wstr in_file_type_spec_current = file_type_spec_wstr_ptr[file_type_index];        
+
+        //push the strings onto the arena
+        const r_wstr dialog_file_type_name_current = r_mem::arena_push_wstr(file_dialog_arena,R_WIN32_FILE_DIALOG_WSTR_MAX_SIZE,in_file_type_name_current);
+        const r_wstr dialog_file_type_spec_current = r_mem::arena_push_wstr(file_dialog_arena,R_WIN32_FILE_DIALOG_WSTR_MAX_SIZE,in_file_type_spec_current);
+
+        //sanity check, make sure we pushed the strings
+        if (
+            dialog_file_type_name_current == NULL ||
+            dialog_file_type_spec_current == NULL) {
+
+            return(false);
+        }
+
+        //add the strings to the file type properties
+        file_dialog_ptr->win32_file_types_ptr[file_type_index].pszName = dialog_file_type_name_current; 
+        file_dialog_ptr->win32_file_types_ptr[file_type_index].pszSpec = dialog_file_type_spec_current; 
+    }
 
     //set the options to open file
     file_dialog_ptr->win32_file_dialog_ptr->SetOptions(FOS_FILEMUSTEXIST);

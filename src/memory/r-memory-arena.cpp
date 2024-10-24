@@ -316,6 +316,77 @@ r_mem::arena_pull_aligned(
     return(arena_memory);
 }
 
+r_external const r_cstr
+r_mem::arena_push_cstr(
+    const RMemoryArenaHandle arena_handle,
+    const r_size             c_str_size_max,
+    const r_cstr             c_str) {
+
+    //sanity check
+    if (
+        arena_handle   == NULL || // valid arena handle
+        c_str_size_max == 0    || // max size is set
+        c_str          == NULL) { // the string is not null
+
+        return(false);
+    }
+
+    //get the string length, plus 1 for the null terminator
+    const r_size c_str_len = strnlen_s(c_str,c_str_size_max) + 1;
+
+    //push the memory on the arena
+    r_memory arena_memory = r_mem::arena_push(arena_handle,c_str_len);
+
+    //clear the memory
+    memset(arena_memory,0,c_str_len);
+
+    //copy the string over
+    memmove(arena_memory,c_str,c_str_len);
+
+    //cast the memory to a wstr
+    const r_cstr result = (r_cstr)arena_memory;
+
+    //we're done
+    return(result);
+}
+
+r_external const r_wstr
+r_mem::arena_push_wstr(
+    const RMemoryArenaHandle arena_handle,
+    const r_size             w_str_size_max,
+    const r_wstr             w_str) {
+
+    //sanity check
+    if (
+        arena_handle   == NULL || // valid arena handle
+        w_str_size_max == 0    || // max size is set
+        w_str          == NULL) { // the string is not null
+
+        return(NULL);
+    }
+
+    //get the string length, plus 1 for the null terminator
+    const r_size w_str_len = wcsnlen_s(w_str,w_str_size_max) + 1;
+
+    //now, we need to get the size in bytes, since this is a wide string
+    const r_size w_str_len_bytes = w_str_len * sizeof(r_wstr); 
+
+    //push the memory on the arena
+    r_memory arena_memory = r_mem::arena_push(arena_handle,w_str_len_bytes);
+
+    //clear the memory 
+    memset(arena_memory,0,w_str_len_bytes);
+
+    //copy the string over
+    memmove(arena_memory,(r_void*)w_str,w_str_len_bytes);
+
+    //cast the memory to a wstr
+    const r_wstr result = (r_wstr)arena_memory;
+
+    //we're done
+    return(result);
+}
+
 r_external const r_b8
 r_mem::arena_can_push(
     const RMemoryArenaHandle arena_handle,

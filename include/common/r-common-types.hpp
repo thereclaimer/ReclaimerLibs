@@ -26,8 +26,10 @@ typedef int32_t r_b32;
 typedef int64_t r_b64;
 
 //strings
-typedef char  r_char;
-typedef char* r_cstr;
+typedef char     r_char;
+typedef wchar_t  r_wchar;
+typedef char*    r_cstr;
+typedef wchar_t* r_wstr;
 
 //memory
 typedef void     r_void;

@@ -13,6 +13,8 @@ struct RWin32FileDialog {
     IShellItem*        win32_shell_item;
     LPWSTR             win32_shell_item_display_name;
     HWND               win32_parent_window_handle;
+    r_size             file_type_count;
+    COMDLG_FILTERSPEC* win32_file_types_ptr;
 };
 
 namespace r_win32_internal {

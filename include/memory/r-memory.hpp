@@ -147,6 +147,9 @@ namespace r_mem {
     r_external const r_memory arena_push_aligned (const RMemoryArenaHandle arena_handle, const r_size size, const r_size alignment);
     r_external const r_memory arena_pull_aligned (const RMemoryArenaHandle arena_handle, const r_size size, const r_size alignment);
 
+    r_external const r_cstr arena_push_cstr (const RMemoryArenaHandle arena_handle, const r_size c_str_size_max, const r_cstr c_str); 
+    r_external const r_wstr arena_push_wstr (const RMemoryArenaHandle arena_handle, const r_size w_str_size_max, const r_wstr w_str); 
+
     r_external const r_b8 arena_can_push         (const RMemoryArenaHandle arena_handle, const r_size size);
     r_external const r_b8 arena_can_pull         (const RMemoryArenaHandle arena_handle, const r_size size);
     r_external const r_b8 arena_can_push_aligned (const RMemoryArenaHandle arena_handle, const r_size size, const r_size alignment);
