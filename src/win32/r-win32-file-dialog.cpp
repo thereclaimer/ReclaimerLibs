@@ -64,6 +64,43 @@ r_win32::file_dialog_destroy(
     return(result);
 }
 
+r_external const r_b8 
+r_win32::file_dialog_select_file(
+    const RWin32FileDialogHandle file_dialog_handle,
+    const r_cstr                 starting_directory,
+    const r_size                 extension_count,
+    const r_size                 extension_stride,
+    const r_cstr                 extension_buffer) {
+
+    //sanity check
+    if (
+        in_file_dialog_handle        == NULL ||
+        in_starting_directory        == NULL ||
+        in_extension_count           == 0    ||
+        in_extension_stride          == 0    ||
+        in_extension_buffer          == NULL ||
+        in_selected_file_buffer_size == 0    ||
+        out_selected_file_buffer     == NULL) {
+
+        return(false);
+    }
+
+    HRESULT win32_result;
+
+    //cast the file dialog
+    RWin32FileDialog* file_dialog_ptr = (RWin32FileDialog*)in_file_dialog_handle;
+
+    //set the options to open file
+    file_dialog_ptr->win32_file_dialog_ptr->SetOptions(FOS_FILEMUSTEXIST);
+
+    //show the dialog
+    win32_result = file_dialog_ptr->win32_file_dialog_ptr->Show(
+        file_dialog_ptr->win32_parent_window_handle);
+    
+    //whatever happens, we're done
+    return(true);
+}
+
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
