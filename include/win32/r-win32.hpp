@@ -5,7 +5,6 @@
 #include <r-common.hpp>
 
 #include "r-win32-context.hpp"
-#include "r-win32-file-dialog.hpp"
 #include "r-win32-file.hpp"
 #include "r-win32-imgui.hpp"
 #include "r-win32-main.hpp"
@@ -14,5 +13,6 @@
 #include "r-win32-system.hpp"
 #include "r-win32-rendering.hpp"
 #include "r-win32-window.hpp"
+#include "r-win32-file-dialog.hpp"
 
 #endif //R_WIN32_HPP

@@ -7,7 +7,7 @@
 /* EXTERNAL                                                                       */
 /**********************************************************************************/
 
-r_external const RFileDialogHandle
+r_external const RWin32FileDialogHandle
 r_win32::file_dialog_create(
     const RWin32WindowHandle parent_window_handle) {
 
@@ -47,7 +47,7 @@ r_win32::file_dialog_create(
 
 r_external const r_b8
 r_win32::file_dialog_destroy(
-    const RFileDialogHandle  file_dialog_handle) {
+    const RWin32FileDialogHandle file_dialog_handle) {
 
     //sanity check
     if (!file_dialog_handle) {
