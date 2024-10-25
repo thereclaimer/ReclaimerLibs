@@ -25,6 +25,7 @@ pushd ..
 @set path_include_r_algorithms=      %path_include%\algorithms
 @set path_include_r_common=          %path_include%\common
 @set path_include_r_datastructures=  %path_include%\data-structures
+@set path_include_r_external=        %path_include%\external
 @set path_include_r_math=            %path_include%\math
 @set path_include_r_memory=          %path_include%\memory
 @set path_include_r_string=          %path_include%\string
@@ -80,21 +81,37 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
 
 @set cl_flags=        /Zi ^
                       /LD ^
-                      /MD ^
-                      /O1
+                      /MD
 
 @set cl_output=       /Fe:%path_build_bin%\RLibs.dll ^
                       /Fd:%path_build_bin%\RLibs.pdb ^
                       /Fo:%path_build_obj%\RLibs.obj
 
-@set cl_includes=     /I %path_build_include%        ^
-                      /I %path_src_r_algorithms%     ^
-                      /I %path_src_r_common%         ^
-                      /I %path_src_r_datastructures% ^
-                      /I %path_src_r_math%           ^
-                      /I %path_src_r_memory%         ^
-                      /I %path_src_r_string%         ^
-                      /I %path_src_r_win32%
+@set cl_includes=     /I %path_include%                   ^
+                      /I %path_include_r_algorithms%      ^
+                      /I %path_include_r_common%          ^
+                      /I %path_include_r_datastructures%  ^
+                      /I %path_include_r_external%        ^
+                      /I %path_include_r_math%            ^
+                      /I %path_include_r_memory%          ^
+                      /I %path_include_r_string%          ^
+                      /I %path_include_r_win32%           ^
+                      /I %path_internal%                  ^
+                      /I %path_internal_r_algorithms%     ^
+                      /I %path_internal_r_common%         ^
+                      /I %path_internal_r_datastructures% ^
+                      /I %path_internal_r_math%           ^
+                      /I %path_internal_r_memory%         ^
+                      /I %path_internal_r_string%         ^
+                      /I %path_internal_r_win32%          ^
+                      /I %path_src_r_algorithms%          ^
+                      /I %path_src_r_common%              ^
+                      /I %path_src_r_datastructures%      ^
+                      /I %path_src_r_math%                ^
+                      /I %path_src_r_memory%              ^
+                      /I %path_src_r_string%              ^
+                      /I %path_src_r_win32%               ^
+                      /I %path_vcpkg_include%
 
 @set cl_source=       %path_source_file%
 
@@ -107,7 +124,11 @@ xcopy %path_vcpkg_include%\*.* %path_build_include% /S /I
                       gdi32.lib    ^
                       opengl32.lib ^
                       glew32.lib   ^
-                      GlU32.Lib
+                      GlU32.Lib    ^
+                      imgui.lib    ^
+                      Comdlg32.lib ^
+                      shell32.lib  ^
+                      Ole32.lib
 
 ::----------------------------------------------------------------
 :: COMPILE

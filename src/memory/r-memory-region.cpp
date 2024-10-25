@@ -2,9 +2,9 @@
 
 #include "r-memory-internal.hpp"
 
-r_external const RHNDMemoryRegion
+r_external const RMemoryRegionHandle
 r_mem::region_create(
-    const RHNDMemoryReservation reservation_handle,
+    const RMemoryReservationHandle reservation_handle,
     const r_cstr                region_tag,
     const r_size                region_size_minimum,
     const r_size                arena_size_minimum) {
@@ -42,9 +42,9 @@ r_mem::region_create(
     return(region_ptr);
 }
 
-r_external const RHNDMemoryRegion
+r_external const RMemoryRegionHandle
 r_mem::region_create_arena_pool(
-    const RHNDMemoryReservation reservation_handle,
+    const RMemoryReservationHandle reservation_handle,
     const r_cstr                region_tag,
     const r_size                arena_size_minimum,
     const r_size                arena_count) {
@@ -71,9 +71,9 @@ r_mem::region_create_arena_pool(
     return(region_ptr);
 }
 
-r_external const RHNDMemoryRegion
+r_external const RMemoryRegionHandle
 r_mem::region_create_struct_pool(
-    const RHNDMemoryReservation reservation_handle,
+    const RMemoryReservationHandle reservation_handle,
     const r_cstr                region_tag,
     const r_size                arena_size_minimum,
     const r_size                struct_size,
@@ -120,9 +120,9 @@ r_mem::region_create_struct_pool(
     return(region_ptr);
 }
 
-r_external const RHNDMemoryRegion
+r_external const RMemoryRegionHandle
 r_mem::region_list(
-    const RHNDMemoryReservation reservation_handle) {
+    const RMemoryReservationHandle reservation_handle) {
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
 
@@ -130,9 +130,9 @@ r_mem::region_list(
 
 }
 
-r_external const RHNDMemoryRegion
+r_external const RMemoryRegionHandle
 r_mem::region_at_index(
-    const RHNDMemoryReservation reservation_handle, 
+    const RMemoryReservationHandle reservation_handle, 
     const r_index               region_index) {
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
@@ -140,9 +140,9 @@ r_mem::region_at_index(
     return(NULL);
 }
 
-r_external const RHNDMemoryRegion
+r_external const RMemoryRegionHandle
 r_mem::region_next(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
 
@@ -151,7 +151,7 @@ r_mem::region_next(
 
 r_external const r_size
 r_mem::region_size_total(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
 
@@ -160,7 +160,7 @@ r_mem::region_size_total(
 
 r_external const r_size
 r_mem::region_size_committed(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
 
@@ -169,7 +169,7 @@ r_mem::region_size_committed(
 
 r_external const r_size
 r_mem::region_size_decommitted(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
     
@@ -178,7 +178,7 @@ r_mem::region_size_decommitted(
 
 r_external const r_size
 r_mem::region_arena_size(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
 
@@ -187,7 +187,7 @@ r_mem::region_arena_size(
 
 r_external const r_size
 r_mem::region_arena_count_total(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
 
@@ -196,7 +196,7 @@ r_mem::region_arena_count_total(
 
 r_external const r_size
 r_mem::region_arena_count_committed(
-    RHNDMemoryRegion region_handle) {
+    RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
 
@@ -205,7 +205,7 @@ r_mem::region_arena_count_committed(
 
 r_external const r_size
 r_mem::region_arena_count_decommitted(
-    RHNDMemoryRegion region_handle) {
+    RMemoryRegionHandle region_handle) {
 
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle);
 
@@ -223,8 +223,14 @@ r_mem_internal::region_list_add(
 
     RMemoryRegionList& region_list = reservation_ptr->region_list;
 
-    region_ptr->arena_start  = region_list.next_arena_start;
+    //calculate the starting arena address
+    const r_memory reservation_start         = reservation_ptr->start;
+    const r_size   reservation_size_occupied = reservation_ptr->region_list.total_size; 
+    const r_memory region_arena_start        = reservation_start + reservation_size_occupied;  
+
+    region_ptr->arena_start  = region_arena_start;
     region_ptr->region_index = region_list.count;
+
 
     if (!region_list.first) {
         region_list.first = region_ptr;
@@ -234,7 +240,6 @@ r_mem_internal::region_list_add(
     region_list.last->next        = region_ptr;
     region_list.last              = region_ptr;
     region_list.total_size       += region_ptr->region_size;
-    region_list.next_arena_start += region_ptr->region_size;
 }
 
 r_internal const r_b8 

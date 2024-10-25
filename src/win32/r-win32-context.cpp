@@ -1,25 +1,20 @@
 #pragma once
 
+#include <shlobj_core.h> 
+
 #include "r-win32-internal-context.hpp"
 
 r_external const r_b8
 r_win32::context_create(
-          RWin32MainArgs& r_win32_args,
-    const r_size          file_count_max,
-    const r_size          stack_size) {
+    RWin32MainArgs& r_win32_args) {
 
     r_b8 result = true;
 
     r_win32_internal::system_info_get();
 
-    //create the stack
-    if (stack_size > 0) {
+    HRESULT win32_result = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
-        RWin32ContextStack& stack_ref = _r_win32_context.stack;
-        stack_ref.size     = r_win32::memory_align_to_allocation_granularity(stack_size);
-        stack_ref.start    = r_win32::memory_reserve_and_commit(stack_size);
-        stack_ref.position = 0;
-    }
+    result &= SUCCEEDED(win32_result);
 
     return(result);
 }
@@ -33,43 +28,123 @@ r_win32::context_destroy(
     return(result);
 }
 
-r_internal const r_b8
-r_win32_internal::context_stack_can_push(
-    const r_size size) {
+r_external const r_b8 
+r_win32::context_set_memory_region(
+    const RMemoryRegionHandle region_handle) {
 
-    RWin32ContextStack& stack_ref = _r_win32_context.stack;
+    _r_win32_context.region = region_handle;
 
-    const r_size new_position = stack_ref.position + size;
-
-    if (!stack_ref.start || new_position >= stack_ref.size) {
-        return(false);
-    }
+    return(region_handle ? true : false);
 }
 
-r_internal r_memory 
-r_win32_internal::context_stack_push(
-    const r_size size) {
 
-    const r_b8 can_push = r_win32_internal::context_stack_can_push(size);
-    if (!can_push) {
+r_internal RWin32Window* 
+r_win32_internal::context_window_commit(
+    r_void) {
+
+    const RMemoryArenaHandle window_arena_handle = r_win32_internal::context_arena_commit();
+    if (!window_arena_handle) {
         return(NULL);
     }
 
-    RWin32ContextStack& stack_ref = _r_win32_context.stack;
-    r_memory stack_memory = stack_ref.start + stack_ref.position;
-    stack_ref.position += size;
+    const r_size window_size      = sizeof(RWin32Window);
+    const r_size window_alignment = alignof(RWin32Window);
 
-    return(stack_memory);
+    RWin32Window* window_ptr = 
+        (RWin32Window*)r_mem::arena_push_aligned(
+            window_arena_handle,
+            window_size,
+            window_alignment);
+    
+    if (!window_ptr) {
+        return(NULL);
+    }
+
+    window_ptr->arena = window_arena_handle;
+
+    return(window_ptr);
 }
 
-r_internal r_memory
-r_win32_internal::context_stack_push_aligned(
-    const r_size size,
-    const r_size alignment) {
+r_internal const r_b8
+r_win32_internal::context_window_decommit(
+    RWin32Window* window_ptr) {
 
-    const r_size size_aligned = r_align_a_to_b(size,alignment);
+    if (!window_ptr) {
+        return(false);
+    }
 
-    r_memory stack_memory = r_win32_internal::context_stack_push(size_aligned);
-
-    return(stack_memory);
+    return(r_mem::arena_decommit(window_ptr->arena));
 }
+
+r_internal RWin32RenderingContext* 
+r_win32_internal::context_rendering_context_commit(
+    r_void) {
+
+    const RMemoryArenaHandle rendering_context_arena_handle = r_win32_internal::context_arena_commit();
+    if (!rendering_context_arena_handle) {
+        return(NULL);
+    }
+
+    const r_size rendering_context_size      = sizeof(RWin32RenderingContext);
+    const r_size rendering_context_alignment = alignof(RWin32RenderingContext);
+
+    RWin32RenderingContext* rendering_context_ptr =
+        (RWin32RenderingContext*)r_mem::arena_push_aligned(
+            rendering_context_arena_handle,        
+            rendering_context_size,
+            rendering_context_alignment);
+
+    if (!rendering_context_ptr) {
+        return(NULL);
+    }
+
+    rendering_context_ptr->arena = rendering_context_arena_handle;
+
+    return(rendering_context_ptr);
+}
+
+r_internal RWin32FileTable*
+r_win32_internal::context_file_table_commit(
+    r_void) {
+
+    //get an arena
+    const RMemoryArenaHandle file_table_arena_handle = r_win32_internal::context_arena_commit();
+    if (!file_table_arena_handle) {
+        return(NULL);
+    }
+
+    //calculate table size and alignment
+    const r_size file_table_size      = sizeof(RWin32FileTable);
+    const r_size file_table_alignment = alignof(RWin32FileTable);
+
+    //push the table onto the arena
+    RWin32FileTable* file_table_ptr =
+        (RWin32FileTable*)r_mem::arena_push_aligned(
+            file_table_arena_handle,
+            file_table_size,
+            file_table_alignment);
+
+    //if that failed, we're done
+    if (!file_table_ptr) {
+        return(NULL);
+    }
+
+    //set the file table arena, and we're done
+    file_table_ptr->arena_handle = file_table_arena_handle;
+    return(file_table_ptr);
+}
+
+
+r_internal const r_b8                    
+r_win32_internal::context_rendering_context_decommit(
+    RWin32RenderingContext* rendering_context_ptr) {
+
+    if (!rendering_context_ptr) {
+        return(false);
+    }
+
+    return(r_mem::arena_decommit(rendering_context_ptr->arena));
+
+}
+
+            

@@ -2,9 +2,9 @@
 
 #include "r-memory-internal.hpp"
 
-r_external const RHNDMemoryBlockAllocator 
+r_external const RMemoryBlockAllocatorHandle 
 r_mem::block_allocator_create(
-    const RHNDMemoryReservation reservation_handle,
+    const RMemoryReservationHandle reservation_handle,
     const r_cstr                block_allocator_tag,
     const r_size                block_size,
     const r_size                block_alignment,
@@ -87,9 +87,9 @@ r_mem::block_allocator_create(
     return(block_allocator_ptr);
 }
 
-r_external const RHNDMemoryBlock
+r_external const RMemoryBlockHandle
 r_mem::block_allocator_commit(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     //get the block allocator
     RMemoryBlockAllocator* block_allocator_ptr = r_mem_internal::block_allocator_from_handle(block_allocator_handle);
@@ -155,7 +155,7 @@ r_mem::block_allocator_commit(
 
 r_external const r_b8     
 r_mem::block_allocator_decommit(
-    const RHNDMemoryBlock block_handle) {
+    const RMemoryBlockHandle block_handle) {
 
     //get the block
     RMemoryBlock* block_ptr = r_mem_internal::block_from_handle(block_handle);
@@ -208,7 +208,7 @@ r_mem::block_allocator_decommit(
 
 r_external const r_b8     
 r_mem::block_allocator_reset(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     //get the block allocator
     RMemoryBlockAllocator* block_allocator_ptr = r_mem_internal::block_allocator_from_handle(block_allocator_handle);
@@ -258,92 +258,92 @@ r_mem::block_allocator_reset(
 
 r_external const r_size   
 r_mem::block_allocator_size_total(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_size_commited(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_size_uncommited(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_block_size(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_block_count_total(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_block_count_committed(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_block_count_uncommitted(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_arena_size(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_arena_count_total(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_arena_count_committed(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
 r_external const r_size   
 r_mem::block_allocator_arena_count_uncommitted(
-    const RHNDMemoryBlockAllocator block_allocator_handle) {
+    const RMemoryBlockAllocatorHandle block_allocator_handle) {
 
     return(0);
 }
 
-r_external const RHNDMemoryBlock 
+r_external const RMemoryBlockHandle 
 r_mem::block_allocator_block_at_index(
-    const RHNDMemoryBlockAllocator block_allocator_handle,
+    const RMemoryBlockAllocatorHandle block_allocator_handle,
     const r_index                  block_index) {
 
     return(0);
 }
 
-r_external const RHNDMemoryBlock
+r_external const RMemoryBlockHandle
 r_mem::block_allocator_commit_at_index(
-    const RHNDMemoryBlockAllocator block_allocator_handle,
+    const RMemoryBlockAllocatorHandle block_allocator_handle,
     const r_index                  block_index) {
 
     return(0);
@@ -351,7 +351,7 @@ r_mem::block_allocator_commit_at_index(
 
 r_external const r_b8 
 r_mem::block_allocator_decommit_at_index(
-    const RHNDMemoryBlockAllocator block_allocator_handle, 
+    const RMemoryBlockAllocatorHandle block_allocator_handle, 
     const r_index                  block_index) {
 
     return(true);

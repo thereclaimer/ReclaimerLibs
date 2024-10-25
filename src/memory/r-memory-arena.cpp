@@ -6,9 +6,9 @@
 /* EXTERNAL                                                                       */
 /**********************************************************************************/
 
-r_external const RHNDMemoryArena 
+r_external const RMemoryArenaHandle 
 r_mem::arena_at_index(
-    const RHNDMemoryRegion region_handle,
+    const RMemoryRegionHandle region_handle,
     const r_index          arena_index) {
 
     //get the region
@@ -25,9 +25,9 @@ r_mem::arena_at_index(
     return(&region_ptr->arenas[arena_index]);
 }
 
-r_external const RHNDMemoryArena
+r_external const RMemoryArenaHandle
 r_mem::arena_commit(
-    const RHNDMemoryRegion region_handle) {
+    const RMemoryRegionHandle region_handle) {
 
     //get the region
     RMemoryRegion* region_ptr = r_mem_internal::region_from_handle(region_handle); 
@@ -55,9 +55,9 @@ r_mem::arena_commit(
     return(committed_arena);
 }
 
-r_external const RHNDMemoryArena
+r_external const RMemoryArenaHandle
 r_mem::arena_commit_next(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena and region
     RMemoryArena*  arena_ptr  = r_mem_internal::arena_from_handle(arena_handle);
@@ -91,9 +91,9 @@ r_mem::arena_commit_next(
     return(commit_result ? next_arena : NULL);
 }
 
-r_external const RHNDMemoryArena
+r_external const RMemoryArenaHandle
 r_mem::arena_commit_index(
-    const RHNDMemoryRegion region_handle,
+    const RMemoryRegionHandle region_handle,
     const r_index          arena_index) {
 
     //get the region
@@ -113,7 +113,7 @@ r_mem::arena_commit_index(
 
 r_external const r_b8
 r_mem::arena_decommit(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);
@@ -139,7 +139,7 @@ r_mem::arena_decommit(
 
 r_external const r_b8
 r_mem::arena_is_committed(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);
@@ -153,7 +153,7 @@ r_mem::arena_is_committed(
 
 r_external const r_b8
 r_mem::arena_at_index_is_committed(
-    const RHNDMemoryRegion region_handle,
+    const RMemoryRegionHandle region_handle,
     const r_index          arena_index) {
 
     //get the region
@@ -164,7 +164,7 @@ r_mem::arena_at_index_is_committed(
 
     //get the arena
     RMemoryArena* arena_ptr =  (RMemoryArena*)r_mem::arena_at_index(region_ptr,arena_index);
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
@@ -174,11 +174,11 @@ r_mem::arena_at_index_is_committed(
 
 r_external const r_size
 r_mem::arena_size_total(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
@@ -194,11 +194,11 @@ r_mem::arena_size_total(
 
 r_external const r_size
 r_mem::arena_size_used(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
@@ -208,11 +208,11 @@ r_mem::arena_size_used(
 
 r_external const r_size
 r_mem::arena_size_free(
-    const RHNDMemoryArena arena_handle) {
+    const RMemoryArenaHandle arena_handle) {
 
     //get the arena
     RMemoryArena* arena_ptr = r_mem_internal::arena_from_handle(arena_handle);  
-    if (arena_ptr) {
+    if (!arena_ptr) {
         return(NULL);
     }
 
@@ -229,7 +229,7 @@ r_mem::arena_size_free(
 
 r_external const r_memory
 r_mem::arena_push(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //first make sure we can push
@@ -257,7 +257,7 @@ r_mem::arena_push(
 
 r_external const r_memory
 r_mem::arena_pull(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //first make sure we can pull
@@ -288,7 +288,7 @@ r_mem::arena_pull(
 
 r_external const r_memory
 r_mem::arena_push_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 
@@ -303,7 +303,7 @@ r_mem::arena_push_aligned(
 
 r_external const r_memory
 r_mem::arena_pull_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 
@@ -316,9 +316,80 @@ r_mem::arena_pull_aligned(
     return(arena_memory);
 }
 
+r_external const r_cstr
+r_mem::arena_push_cstr(
+    const RMemoryArenaHandle arena_handle,
+    const r_size             c_str_size_max,
+    const r_cstr             c_str) {
+
+    //sanity check
+    if (
+        arena_handle   == NULL || // valid arena handle
+        c_str_size_max == 0    || // max size is set
+        c_str          == NULL) { // the string is not null
+
+        return(false);
+    }
+
+    //get the string length, plus 1 for the null terminator
+    const r_size c_str_len = strnlen_s(c_str,c_str_size_max) + 1;
+
+    //push the memory on the arena
+    r_memory arena_memory = r_mem::arena_push(arena_handle,c_str_len);
+
+    //clear the memory
+    memset(arena_memory,0,c_str_len);
+
+    //copy the string over
+    memmove(arena_memory,c_str,c_str_len);
+
+    //cast the memory to a wstr
+    const r_cstr result = (r_cstr)arena_memory;
+
+    //we're done
+    return(result);
+}
+
+r_external const r_wstr
+r_mem::arena_push_wstr(
+    const RMemoryArenaHandle arena_handle,
+    const r_size             w_str_size_max,
+    const r_wstr             w_str) {
+
+    //sanity check
+    if (
+        arena_handle   == NULL || // valid arena handle
+        w_str_size_max == 0    || // max size is set
+        w_str          == NULL) { // the string is not null
+
+        return(NULL);
+    }
+
+    //get the string length, plus 1 for the null terminator
+    const r_size w_str_len = wcsnlen_s(w_str,w_str_size_max) + 1;
+
+    //now, we need to get the size in bytes, since this is a wide string
+    const r_size w_str_len_bytes = w_str_len * sizeof(r_wstr); 
+
+    //push the memory on the arena
+    r_memory arena_memory = r_mem::arena_push(arena_handle,w_str_len_bytes);
+
+    //clear the memory 
+    memset(arena_memory,0,w_str_len_bytes);
+
+    //copy the string over
+    memmove(arena_memory,(r_void*)w_str,w_str_len_bytes);
+
+    //cast the memory to a wstr
+    const r_wstr result = (r_wstr)arena_memory;
+
+    //we're done
+    return(result);
+}
+
 r_external const r_b8
 r_mem::arena_can_push(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //get the arena
@@ -342,7 +413,7 @@ r_mem::arena_can_push(
 
 r_external const r_b8
 r_mem::arena_can_pull(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size) {
 
     //get the arena
@@ -357,7 +428,7 @@ r_mem::arena_can_pull(
 
 r_external const r_b8
 r_mem::arena_can_push_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 
@@ -369,7 +440,7 @@ r_mem::arena_can_push_aligned(
 
 r_external const r_b8
 r_mem::arena_can_pull_aligned(
-    const RHNDMemoryArena arena_handle,
+    const RMemoryArenaHandle arena_handle,
     const r_size          size,
     const r_size          alignment) {
 

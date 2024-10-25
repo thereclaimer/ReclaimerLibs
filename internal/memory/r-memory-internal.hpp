@@ -24,7 +24,7 @@ struct RMemoryArena {
 
 namespace r_mem_internal {
 
-    RMemoryArena* arena_from_handle (const RHNDMemoryArena arena_handle);
+    RMemoryArena* arena_from_handle (const RMemoryArenaHandle arena_handle);
 };
 
 /**********************************************************************************/
@@ -47,12 +47,11 @@ struct RMemoryRegionList{
     RMemoryRegion* last;
     r_size         count;
     r_size         total_size;
-    r_memory       next_arena_start;
 };
 
 namespace r_mem_internal {
 
-    inline RMemoryRegion* region_from_handle(const RHNDMemoryRegion region_handle) { return((RMemoryRegion*)region_handle); }
+    inline RMemoryRegion* region_from_handle(const RMemoryRegionHandle region_handle) { return((RMemoryRegion*)region_handle); }
     
     r_internal r_void         region_list_add            (RMemoryReservation* reservation_ptr, RMemoryRegion* region_ptr);
     r_internal const r_b8     region_list_can_add        (RMemoryReservation* reservation_ptr, const r_size region_size);
@@ -74,7 +73,7 @@ namespace r_mem_internal {
 
 namespace r_mem_internal {
 
-    inline RMemoryArena* arena_from_handle (const RHNDMemoryArena arena_handle) { return((RMemoryArena*)arena_handle); }
+    inline RMemoryArena* arena_from_handle (const RMemoryArenaHandle arena_handle) { return((RMemoryArena*)arena_handle); }
 
     r_internal const r_b8
     arena_commit_immediate(
@@ -154,12 +153,12 @@ struct RMemoryBlockAllocatorList {
 namespace r_mem_internal {
 
     inline RMemoryBlockAllocator* 
-    block_allocator_from_handle(const RHNDMemoryBlockAllocator block_allocator_handle) {
+    block_allocator_from_handle(const RMemoryBlockAllocatorHandle block_allocator_handle) {
         return((RMemoryBlockAllocator*)block_allocator_handle);
     }
 
     inline RMemoryBlock*
-    block_from_handle(const RHNDMemoryBlock block_handle) { return((RMemoryBlock*)block_handle); }
+    block_from_handle(const RMemoryBlockHandle block_handle) { return((RMemoryBlock*)block_handle); }
 
     r_internal RMemoryBlockAllocator*
     block_allocator_from_block(RMemoryBlock* block_ptr);
@@ -247,7 +246,7 @@ struct RMemoryReservationList {
 
 namespace r_mem_internal {
 
-    inline RMemoryReservation* reservation_from_handle(const RHNDMemoryReservation reservation_handle) { return((RMemoryReservation*)reservation_handle); }    
+    inline RMemoryReservation* reservation_from_handle(const RMemoryReservationHandle reservation_handle) { return((RMemoryReservation*)reservation_handle); }    
 
     r_internal r_void       reservation_list_add         (RMemoryReservation* reservation_ptr);
     r_internal const r_b8   reservation_list_release_all (r_void);

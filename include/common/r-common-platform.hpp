@@ -38,12 +38,12 @@ typedef r_memory
     const r_memory start,
     const r_size   size);
 
-typedef r_b8
+typedef const r_b8
 (*r_funcptr_platform_memory_decommit) (
     const r_memory start,
     const r_size   size);
 
-typedef r_b8
+typedef const r_b8
 (*r_funcptr_platform_memory_release) (
     const r_memory start,
     const r_size   size);

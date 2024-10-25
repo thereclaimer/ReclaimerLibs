@@ -26,8 +26,10 @@ typedef int32_t r_b32;
 typedef int64_t r_b64;
 
 //strings
-typedef char  r_char;
-typedef char* r_cstr;
+typedef char     r_char;
+typedef wchar_t  r_wchar;
+typedef char*    r_cstr;
+typedef wchar_t* r_wstr;
 
 //memory
 typedef void     r_void;
@@ -37,6 +39,8 @@ typedef uint8_t* r_memory;
 typedef size_t   r_size;
 typedef size_t   r_index;
 typedef intptr_t r_address;
+
+#define R_INVALID_INDEX SIZE_MAX
 
 //time
 typedef uint64_t r_timems;
