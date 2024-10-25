@@ -16,29 +16,13 @@ r_win32::file_dialog_create(
         return(NULL);
     }
 
-    //get a win32 dialog pointer
-    IFileDialog* win32_dialog_ptr;
-    HRESULT result = 
-        CoCreateInstance(
-            CLSID_FileOpenDialog, 
-            NULL, 
-            CLSCTX_ALL, 
-            IID_IFileDialog, 
-            reinterpret_cast<void**>(&win32_dialog_ptr));
-
-    //if that didn't work, we're done
-    if (!SUCCEEDED(result)) {
-        return(NULL);
-    }
-
     //commit a dialog
     RWin32FileDialog* file_dialog_ptr = r_win32_internal::file_dialog_commit();
     if (!file_dialog_ptr) {
         return(NULL);
     }
 
-    //initialize the file dialog
-    file_dialog_ptr->win32_file_dialog_ptr      = win32_dialog_ptr;
+    //set the parent window handle
     file_dialog_ptr->win32_parent_window_handle = r_win32::window_win32_handle(parent_window_handle);
 
     //we're done
@@ -75,7 +59,13 @@ r_win32::file_dialog_reset(
 
     //cast the file dialog
     RWin32FileDialog* file_dialog_ptr = (RWin32FileDialog*)file_dialog_handle;
-    
+
+    //clear the dialog data and release it
+    if (file_dialog_ptr->win32_file_dialog_ptr) {
+        file_dialog_ptr->win32_file_dialog_ptr->ClearClientData();
+        file_dialog_ptr->win32_file_dialog_ptr->Release();    
+    }
+
     //cache the arena
     const RMemoryArenaHandle file_dialog_arena = file_dialog_ptr->arena_handle;
     if (!file_dialog_arena) {
@@ -90,9 +80,6 @@ r_win32::file_dialog_reset(
     //reset the arena up to the memory for the dialog struct
     const r_memory arena_memory = r_mem::arena_pull(file_dialog_arena,arena_size_to_pull);
     const r_b8     result       = arena_memory != NULL;
-
-    //null the pointers in the struct that we know would be referencing the arena
-    file_dialog_ptr->win32_file_types_ptr = NULL;
 
     //we're done
     return(result);
@@ -117,8 +104,6 @@ r_win32::file_dialog_select_file(
         return(false);
     }
 
-    HRESULT win32_result;
- 
     //reset the dialog
     if (!r_win32::file_dialog_reset(file_dialog_handle)) {
         return(false);
@@ -127,15 +112,28 @@ r_win32::file_dialog_select_file(
     //cast the file dialog
     RWin32FileDialog* file_dialog_ptr = (RWin32FileDialog*)file_dialog_handle;
 
-    //cache some stuff so we don't need to keep dereferrencing pointers
-    const RMemoryArenaHandle file_dialog_arena = file_dialog_ptr->arena_handle;
+    //get a win32 dialog pointer
+    HRESULT result = 
+        CoCreateInstance(
+            CLSID_FileOpenDialog, 
+            NULL, 
+            CLSCTX_ALL, 
+            IID_IFileDialog, 
+            (void**)(&file_dialog_ptr->win32_file_dialog_ptr));
 
-    //push the file types on the arena
-    file_dialog_ptr->win32_file_types_ptr = r_mem_arena_push_array(file_dialog_arena,file_type_count,COMDLG_FILTERSPEC);
+    //if that didn't work, we're done
+    if (!SUCCEEDED(result)) {
+        return(false);
+    }
 
-    //sanity check, make sure we have our memory
-    if (file_dialog_ptr->win32_file_types_ptr == NULL) {
+    //cache needed references
+    const HWND               win32_parent_window = file_dialog_ptr->win32_parent_window_handle;
+    const RMemoryArenaHandle file_dialog_arena   = file_dialog_ptr->arena_handle;
+          IFileDialog*       win32_dialog_ptr    = file_dialog_ptr->win32_file_dialog_ptr;
 
+    //push the win32 file type struct on the arena
+    COMDLG_FILTERSPEC* win32_file_types_ptr = r_mem_arena_push_array(file_dialog_arena,file_type_count,COMDLG_FILTERSPEC);
+    if (!win32_file_types_ptr) {
         return(false);
     }
 
@@ -162,20 +160,25 @@ r_win32::file_dialog_select_file(
         }
 
         //add the strings to the file type properties
-        file_dialog_ptr->win32_file_types_ptr[file_type_index].pszName = dialog_file_type_name_current; 
-        file_dialog_ptr->win32_file_types_ptr[file_type_index].pszSpec = dialog_file_type_spec_current; 
+        win32_file_types_ptr[file_type_index].pszName = dialog_file_type_name_current; 
+        win32_file_types_ptr[file_type_index].pszSpec = dialog_file_type_spec_current; 
     }
 
+    //clear the dialog data
+    win32_dialog_ptr->ClearClientData();
+
     //set the file types in the dialog
-    file_dialog_ptr->win32_file_dialog_ptr->SetFileTypes(file_type_count,file_dialog_ptr->win32_file_types_ptr);
+    win32_dialog_ptr->SetFileTypes(file_type_count,win32_file_types_ptr);
 
     //set the options to open file
-    file_dialog_ptr->win32_file_dialog_ptr->SetOptions(FOS_FILEMUSTEXIST);
+    win32_dialog_ptr->SetOptions(FOS_FILEMUSTEXIST);
+
+    //set filter index
+    win32_dialog_ptr->SetFileTypeIndex(1);
 
     //show the dialog
-    win32_result = file_dialog_ptr->win32_file_dialog_ptr->Show(
-        file_dialog_ptr->win32_parent_window_handle);
-    
+    win32_dialog_ptr->Show(win32_parent_window);
+
     //whatever happens, we're done
     return(true);
 }
