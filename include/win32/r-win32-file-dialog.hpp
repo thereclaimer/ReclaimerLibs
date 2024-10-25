@@ -14,6 +14,7 @@ namespace r_win32 {
 
     r_external const RWin32FileDialogHandle file_dialog_create  (const RWin32WindowHandle     parent_window_handle);
     r_external const r_b8                   file_dialog_destroy (const RWin32FileDialogHandle file_dialog_handle);
+    r_external const r_b8                   file_dialog_reset   (const RWin32FileDialogHandle file_dialog_handle);
 
     r_external const r_b8 
     file_dialog_select_file(

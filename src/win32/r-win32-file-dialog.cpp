@@ -65,6 +65,40 @@ r_win32::file_dialog_destroy(
 }
 
 r_external const r_b8 
+r_win32::file_dialog_reset(
+    const RWin32FileDialogHandle file_dialog_handle) {
+
+    //sanity check
+    if (!file_dialog_handle) {
+        return(false);
+    }
+
+    //cast the file dialog
+    RWin32FileDialog* file_dialog_ptr = (RWin32FileDialog*)file_dialog_handle;
+    
+    //cache the arena
+    const RMemoryArenaHandle file_dialog_arena = file_dialog_ptr->arena_handle;
+    if (!file_dialog_arena) {
+        return(false);
+    }
+
+    //calculate the size to pull
+    const r_size file_dialog_size_aligned = r_align_size_struct(RWin32FileDialog);
+    const r_size arena_size_used          = r_mem::arena_size_used(file_dialog_arena);
+    const r_size arena_size_to_pull       = arena_size_used - file_dialog_size_aligned; 
+    
+    //reset the arena up to the memory for the dialog struct
+    const r_memory arena_memory = r_mem::arena_pull(file_dialog_arena,arena_size_to_pull);
+    const r_b8     result       = arena_memory != NULL;
+
+    //null the pointers in the struct that we know would be referencing the arena
+    file_dialog_ptr->win32_file_types_ptr = NULL;
+
+    //we're done
+    return(result);
+}
+
+r_external const r_b8 
 r_win32::file_dialog_select_file(
     const RWin32FileDialogHandle file_dialog_handle,
     const r_cstr                 file_dialog_starting_directory,
@@ -84,11 +118,16 @@ r_win32::file_dialog_select_file(
     }
 
     HRESULT win32_result;
+ 
+    //reset the dialog
+    if (!r_win32::file_dialog_reset(file_dialog_handle)) {
+        return(false);
+    }
 
     //cast the file dialog
     RWin32FileDialog* file_dialog_ptr = (RWin32FileDialog*)file_dialog_handle;
 
-    //cache the arena
+    //cache some stuff so we don't need to keep dereferrencing pointers
     const RMemoryArenaHandle file_dialog_arena = file_dialog_ptr->arena_handle;
 
     //push the file types on the arena
@@ -126,6 +165,9 @@ r_win32::file_dialog_select_file(
         file_dialog_ptr->win32_file_types_ptr[file_type_index].pszName = dialog_file_type_name_current; 
         file_dialog_ptr->win32_file_types_ptr[file_type_index].pszSpec = dialog_file_type_spec_current; 
     }
+
+    //set the file types in the dialog
+    file_dialog_ptr->win32_file_dialog_ptr->SetFileTypes(file_type_count,file_dialog_ptr->win32_file_types_ptr);
 
     //set the options to open file
     file_dialog_ptr->win32_file_dialog_ptr->SetOptions(FOS_FILEMUSTEXIST);
