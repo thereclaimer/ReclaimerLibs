@@ -86,7 +86,7 @@ r_win32::file_dialog_reset(
 }
 
 r_external const r_b8 
-r_win32::file_dialog_select_file(
+r_win32::file_dialog_open(
     const RWin32FileDialogHandle file_dialog_handle,
     const r_cstr                 file_dialog_starting_directory,
     const r_size                 file_type_count,

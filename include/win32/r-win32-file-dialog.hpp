@@ -17,7 +17,7 @@ namespace r_win32 {
     r_external const r_b8                   file_dialog_reset   (const RWin32FileDialogHandle file_dialog_handle);
 
     r_external const r_b8 
-    file_dialog_select_file(
+    file_dialog_open(
         const RWin32FileDialogHandle file_dialog_handle,
         const r_cstr                 file_dialog_starting_directory,
         const r_size                 file_type_count,
