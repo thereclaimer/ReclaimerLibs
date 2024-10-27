@@ -10,6 +10,7 @@
 #include "r-win32-main.hpp"
 #include "r-win32-memory.hpp"
 #include "r-win32-monitor.hpp"
+#include "r-win32-string.hpp"
 #include "r-win32-system.hpp"
 #include "r-win32-rendering.hpp"
 #include "r-win32-window.hpp"

@@ -183,6 +183,42 @@ r_win32::file_dialog_open(
     return(true);
 }
 
+r_external const r_wstr
+r_win32::file_dialog_get_selection_as_path_wstr(
+    const RWin32FileDialogHandle in_file_dialog_handle) {
+
+    //TODO: we should have a way to return multiple path selections
+    // the win32 methods assume an array of pointers, so that
+    // should definitely be supported
+
+    //sanity check
+    if (!in_file_dialog_handle) {
+        return(NULL);
+    }
+
+    //cast the file dialog and cache properties
+    RWin32FileDialog* file_dialog_ptr  = (RWin32FileDialog*)in_file_dialog_handle;
+    IFileDialog* win32_file_dialog_ptr = file_dialog_ptr->win32_file_dialog_ptr;
+
+    //get the selection
+    IShellItem*  win32_shell_item_ptr;
+    HRESULT win32_result = win32_file_dialog_ptr->GetResult(&win32_shell_item_ptr);
+
+    //if we have nothing, we're done
+    if (!SUCCEEDED(win32_result)) {
+        return(NULL);
+    }
+
+    //get the display name
+    r_wstr display_name_wstr;
+    win32_result = win32_shell_item_ptr->GetDisplayName(
+        SIGDN_FILESYSPATH,
+        &display_name_wstr);
+
+    //we're done
+    return(display_name_wstr);
+}
+
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/

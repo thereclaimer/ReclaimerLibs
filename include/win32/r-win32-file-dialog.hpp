@@ -23,6 +23,10 @@ namespace r_win32 {
         const r_size                 file_type_count,
         const r_wstr*                file_type_name_wstr_ptr,
         const r_wstr*                file_type_spec_wstr_ptr);
+
+    r_external const r_wstr
+    file_dialog_get_selection_as_path_wstr(
+        const RWin32FileDialogHandle in_file_dialog_handle);
 };
 
 #endif //R_WIN32_FILE_DIALOG_HPP
