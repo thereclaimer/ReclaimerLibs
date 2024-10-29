@@ -44,12 +44,8 @@ namespace r_win32 {
 
 struct RWin32MemoryPageTable {
     r_address page_start;
-    r_size    page_block_size_requested;
-    r_size    page_block_size_actual;
-    r_size    page_block_count;
-    r_size    page_size;
-    r_size    page_count;
-    r_size    page_table_size_total;
+    r_size    block_page_count;
+    r_size    block_count;
 };
 
 namespace r_win32 {
@@ -61,11 +57,8 @@ namespace r_win32 {
 };
 
 struct RWin32MemoryPageBlock {
-    r_address page_table_start;
-    r_address page_block_start;
-    r_address page_block_size;
     r_index   page_block_index;
-    r_size    page_size;
+    r_address page_table_start;
     r_size    page_count;
 };
 
