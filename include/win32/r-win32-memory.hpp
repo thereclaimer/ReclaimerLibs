@@ -4,6 +4,10 @@
 #include <r-common.hpp>
 #include <Windows.h>
 
+/**********************************************************************************/
+/* MEMORY ALLCOATION / DEALLOCATION                                               */
+/**********************************************************************************/
+
 namespace r_win32 {
 
     r_external const r_size memory_align_to_page                   (const r_size size);
